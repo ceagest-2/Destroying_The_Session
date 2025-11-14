@@ -1,0 +1,202 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+
+\geometry{a4paper, margin=2cm}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\bfseries}{}{0em}{}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{bashstyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=bash
+}
+
+\title{Лекция №6: Bash и пакетные менеджеры}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Bash}
+
+\subsection*{Что это такое?}
+\begin{itemize}
+\item Bash — сценарии оболочки bash.
+\end{itemize}
+\subsection*{Зачем?}
+\begin{itemize}
+\item Простая автоматизация действий и скриптов.
+    \item Доступен где есть оболочка.
+    \item Простая интеграция с другими приложениями.
+\end{itemize}
+Bash-скрипт — это файл, содержащий последовательность команд, которые выполняются программой bash построчно. Он позволяет выполнять ряд действий, таких как переход к определённому каталогу, создание папки и запуск процесса с помощью командной строки.
+
+Сохранив эти команды в сценарии (скрипты), вы можете повторять одну и ту же последовательность шагов несколько раз и выполнять их, запустив сценарий.
+
+\section*{Hello World на bash}
+
+Пример скрипта:
+\begin{lstlisting}[style=bashstyle]
+#!/bin/bash
+echo "Hello, World!"
+\end{lstlisting}
+
+Шебанг \texttt{\#!/bin/sh} не обязателен — он может быть изменён под нужную программу, например:
+\begin{lstlisting}[style=bashstyle]
+#!/usr/bin/env python
+\end{lstlisting}
+
+Такой шебанг использует утилиту \texttt{env}, которая ищет исполняемый файл в переменной окружения PATH. Плюс — гибкость пути. Минус -- первый попавшийся файл может не подходить.
+
+\section*{Переменные}
+
+Присваивание переменных:
+\begin{lstlisting}[style=bashstyle]
+name="Alex"
+echo $name
+echo ${name}
+\end{lstlisting}
+
+\subsection*{Особые переменные}
+\begin{itemize}
+\item \texttt{\$@} — все аргументы скрипта.
+\item \texttt{\$i} — iй аргумент скрипта (нумерация с 1).
+\end{itemize}
+\section*{Литералы}
+
+Оболочка выполняет подстановку переменных, шаблонов и т.д. перед выполнением команды. Кавычки позволяют создавать литералы — строки, которые не анализируются оболочкой.
+\begin{itemize}
+\item Одинарные кавычки (\texttt{'}): всё внутри интерпретируется буквально.
+\end{itemize}
+Пример:
+\begin{lstlisting}[style=bashstyle]
+grep 'r.*t' /etc/passwd
+\end{lstlisting}
+
+\section*{Математические операции}
+
+Используется конструкция \texttt{\$((...))}:
+\begin{lstlisting}[style=bashstyle]
+result=$((5 + 3))
+echo $result  \# 8
+\end{lstlisting}
+
+\section*{Управление потоком}
+
+\begin{lstlisting}[style=bashstyle]
+if [ "$1" = "hi" ]; then
+    echo "Hi!"
+else
+    echo "Bye!"
+fi
+\end{lstlisting}
+
+\texttt{[} — это отдельная команда (синоним \texttt{test}), а не часть синтаксиса.
+
+\section*{Логические выражения}
+
+\subsection*{Операторы для числового сравнения}
+\begin{itemize}
+\item \texttt{-eq} — равно
+    \item \texttt{-ne} — не равно
+    \item \texttt{-lt} — меньше
+    \item \texttt{-le} — меньше или равно
+    \item \texttt{-gt} — больше
+    \item \texttt{-ge} — больше или равно
+\end{itemize}
+\subsection*{Операторы проверки прав доступа}
+\begin{itemize}
+\item \texttt{-r} — файл доступен на чтение
+    \item \texttt{-w} — файл доступен на запись
+    \item \texttt{-x} — файл исполняемый
+\end{itemize}
+\subsection*{Операторы проверки типов файлов}
+\begin{itemize}
+\item \texttt{-f} — обычный файл
+    \item \texttt{-d} — каталог
+\end{itemize}
+\section*{Циклы}
+
+Пример цикла \texttt{for}:
+\begin{lstlisting}[style=bashstyle]
+for i in {1..5}; do
+    echo "Iteration $i"
+done
+\end{lstlisting}
+
+Пример цикла \texttt{while}:
+\begin{lstlisting}[style=bashstyle]
+count=1
+while [ $count -le 5 ]; do
+    echo $count
+    count=$((count + 1))
+done
+\end{lstlisting}
+
+\section*{Функции}
+
+\begin{lstlisting}[style=bashstyle]
+greet() {
+    echo "Hi, $1!"
+}
+greet "Ann"
+\end{lstlisting}
+
+\section*{Пример использования awk}
+
+Пример фильтрации данных:
+\begin{lstlisting}[style=bashstyle]
+ps aux | awk '{print $1, $2, $11}' | head -5
+\end{lstlisting}
+
+\section*{Установка пакетов}
+
+\subsection*{Что такое пакет?}
+\begin{itemize}
+\item Пакет — набор команд и зависимостей для установки ПО.
+    \item \texttt{.deb} — Debian и производные (Ubuntu, Mint и др.)
+    \item \texttt{.rpm} — Red Hat и производные (CentOS, Fedora, OpenSUSE)
+    \item \texttt{.apk} — Android
+    \item \texttt{.ebuild} — Gentoo
+\end{itemize}
+\subsection*{Пакетные менеджеры}
+\begin{itemize}
+\item APT
+    \item RPM
+    \item YUM
+    \item DNF (Dandified YUM)
+    \item Pacman
+\end{itemize}
+
+\section*{Что такое репозиторий?}
+Репозиторий (от англ. \textit{repository} — хранилище) — место, где хранятся и поддерживаются данные, чаще всего в виде файлов, доступных для распространения по сети.
+
+Официальные репозитории есть у большинства дистрибутивов Linux. Также можно добавлять сторонние.
+
+
+\end{document}
