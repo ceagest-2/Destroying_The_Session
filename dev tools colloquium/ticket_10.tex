@@ -1,0 +1,167 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=2cm}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\bfseries}{}{0em}{}
+\renewcommand{\labelitemi}{--}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,  
+    urlcolor=cyan,
+}
+
+\title{Общие понятия \texttt{systemd}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Что такое systemd?}
+
+\texttt{systemd} — это менеджер системы и служб для операционных систем Linux. Он запускается как процесс с PID 1 и отвечает за инициализацию всей остальной части системы.
+
+\subsection*{Основные функции}
+\begin{itemize}
+
+\item Параллельный запуск системных служб во время загрузки (существенно ускоряет старт системы).
+    \item Активация демонов по требованию.
+    \item Управление службами на основе зависимостей.
+    \item Контроль за жизненным циклом сервисов: запуск, остановка, перезагрузка, мониторинг.
+\end{itemize}
+\section*{Компоненты systemd}
+
+\texttt{systemd} представляет собой набор базовых компонентов, управляющих различными аспектами системы:
+\begin{itemize}
+\item Запуск и управление службами.
+    \item Монтирование файловых систем.
+    \item Работа с устройствами.
+    \item Управление сетью.
+    \item Журналирование (через \texttt{journalctl}).
+\end{itemize}
+\section*{Понятие Unit}
+
+В \texttt{systemd} все управляемые объекты называются \textbf{unit} (юнит). Они представлены конфигурационными файлами и классифицируются по типам.
+
+\subsection*{Типы юнитов}
+\begin{center}
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Тип} & \textbf{Расширение} & \textbf{Описание} \\
+\hline
+Service unit & \texttt{.service} & Запускает и контролирует процесс. \\
+\hline
+Target unit & \texttt{.target} & Группа сервисов (аналог runlevel). \\
+\hline
+Mount unit & \texttt{.mount} & Точка монтирования. \\
+\hline
+Automount unit & \texttt{.automount} & Автоматическая точка монтирования. \\
+\hline
+Socket unit & \texttt{.socket} & Сетевой или IPC-сокет. \\
+\hline
+Timer unit & \texttt{.timer} & Служба времени (аналог cron). \\
+\hline
+Device unit & \texttt{.device} & Устройство. \\
+\hline
+Swap unit & \texttt{.swap} & Файл подкачки. \\
+\hline
+Path unit & \texttt{.path} & Мониторинг изменений в файловой системе. \\
+\hline
+Snapshot unit & \texttt{.snapshot} & Сохранение состояния системы. \\
+\hline
+Scope unit & \texttt{.scope} & Управление внешними процессами. \\
+\hline
+Slice unit & \texttt{.slice} & Группа процессов, организованных иерархически. \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{Расположение файлов юнитов}
+
+Файлы юнитов располагаются в нескольких каталогах, приоритет которых определяется порядком:
+\begin{itemize}
+\item \texttt{/etc/systemd/system/} — юниты, созданные при включении systemctl \textbf{Наивысший приоритет}.
+    \item \texttt{/run/systemd/system/} —  юниты, созданные во время выполнения.
+    \item \texttt{/usr/lib/systemd/system/} — юниты, поставляемые с установленными пакетами. \textbf{Наименьший приоритет}.
+\end{itemize}
+\section*{Управление службами: systemctl}
+
+Команда \texttt{systemctl} используется для управления системой и службами.
+
+\subsection*{Базовые операции}
+\begin{itemize}
+\item \texttt{systemctl start <name.service>} — запустить службу.
+    \item \texttt{systemctl stop <name.service>} — остановить службу.
+    \item \texttt{systemctl restart <name.service>} — перезапустить службу.
+    \item \texttt{systemctl reload <name.service>} — перезагрузить конфигурацию.
+    \item \texttt{systemctl status <name.service>} — проверить статус службы.
+    \item \texttt{systemctl is-active <name.service>} — проверить, активна ли служба.
+    \item \texttt{systemctl list-units --type=service --all} — показать все службы.
+\end{itemize}
+\subsection*{Операции включения/выключения}
+\begin{itemize}
+\item \texttt{systemctl enable <name.service>} — включить автозапуск службы.
+    \item \texttt{systemctl disable <name.service>} — отключить автозапуск.
+    \item \texttt{systemctl is-enabled <name.service>} — проверить, включена ли служба.
+    \item \texttt{systemctl list-unit-files --type=service} — список всех служб и их статус автозапуска.
+\end{itemize}
+\section*{Создание своего юнита}
+
+Файлы пользовательских юнитов размещаются в каталоге \texttt{/etc/systemd/system/}.
+
+Пример минимального файла службы \texttt{mybestservice.service}:
+
+\begin{verbatim}
+[Unit]
+Description=MyBestService
+After=network.target
+Requires=mysql.service
+
+[Service]
+Type=simple
+User=myunit
+Group=myunit
+WorkingDirectory=/work/www/myunit/current
+ExecStart=/usr/local/bin/bundle exec service -C /work/www/myunit/shared/config/service.rb --daemon
+ExecStop=/usr/local/bin/bundle exec service -S /work/www/myunit/shared/tmp/pids/service.state stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+\end{verbatim}
+
+\subsection*{Секция [Unit]}
+\begin{itemize}
+\item \texttt{Description=} — описание службы.
+    \item \texttt{After=} — указывает, после каких юнитов должна запускаться служба.
+    \item \texttt{Requires=} — жесткая зависимость: если зависимый сервис не запущен, текущий не будет активирован.
+    \item \texttt{Wants=} — слабая зависимость: рекомендуется, но не обязательно.
+\end{itemize}
+\subsection*{Секция [Service]}
+\begin{itemize}
+\item \texttt{Type=simple} — процесс запускается сразу (по умолчанию).
+    \item \texttt{Type=forking} — процесс "разветвляется" (демон); требуется указать \texttt{PIDFile=}.
+    \item \texttt{User=}, \texttt{Group=} — пользователь и группа для запуска.
+    \item \texttt{WorkingDirectory=} — рабочий каталог.
+    \item \texttt{Environment=} — переменные окружения.
+    \item \texttt{OOMScoreAdjust=-1000} — снижает вероятность завершения процесса при нехватке памяти.
+    \item \texttt{ExecStart=}, \texttt{ExecStop=}, \texttt{ExecReload=} — команды запуска, остановки и перезагрузки.
+    \item \texttt{TimeoutSec=} — таймаут ожидания запуска.
+    \item \texttt{Restart=always} — автоматический перезапуск при падении.
+\end{itemize}
+\subsection*{Секция [Install]}
+\begin{itemize}
+\item \texttt{WantedBy=multi-user.target} — служба будет запускаться при загрузке в многопользовательском режиме.
+    \item \texttt{WantedBy=graphical.target} — для графического режима.
+\end{itemize}
+\end{document}
