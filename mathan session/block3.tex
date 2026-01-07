@@ -1,0 +1,322 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---------- ЯЗЫК ----------
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+% ---------- МАТЕМАТИКА ----------
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx} % for images
+
+% ---------- СТРАНИЦА ----------
+\usepackage[
+  left=25mm,
+  right=20mm,
+  top=25mm,
+  bottom=30mm
+]{geometry}
+
+% ---------- АБЗАЦЫ ----------
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% ---------- ШРИФТ ----------
+\usepackage{lmodern}
+
+% ---------- КОЛОНТИТУЛ ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[R]{\thepage}
+
+% ---------- ТЕОРЕМЫ ----------
+\newtheorem{theorem}{Теорема}[section]
+\newtheorem{lemma}{Лемма}[section]
+\newtheorem{definition}{Определение}[section]
+\newtheorem{statement}{Утверждение}[section]
+\newtheorem{example}{Пример}[section]
+
+\begin{document}
+
+\section{Предел числовой последовательности}
+\subsection{Определение предела последовательности}
+
+\begin{definition}
+Последовательностью будет называть отображение $x: \mathbb{N}\to \ \mathbb{R}$.
+\end{definition}
+
+\begin{definition}
+$\ \widehat{\ \mathbb{R}} := \ \overline{\mathbb{R}} \cup \{\infty\} = \ \mathbb{R} \cup \{-\ \infty\} \cup \{+\ \infty\} \cup \{ \infty \}$ — расширенная числовая прямая.
+\end{definition}
+
+
+\begin{definition} (Эпсилон окрестность из $\ \widehat{\ \mathbb{R}}$)
+пусть $\ \varepsilon > 0$, тогда
+\[
+U_\varepsilon(a) = 
+\begin{cases}
+(a - \varepsilon, a + \varepsilon) & \text{если } a \in \mathbb{R} \\
+(\frac{1}{\varepsilon}, +\infty) & \text{если } a = +\infty \\
+(-\infty, -\frac{1}{\varepsilon}) & \text{если } a = -\infty \\
+U_\varepsilon(-\infty) \cup U_\varepsilon(+\infty) & \text{если } a = \infty
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}
+Пусть $\{x_n\}$ — числовая последовательность. Будем говорить, что элемент $a \in \widehat{\ \mathbb{R}}$ является пределом последовательности $\{x_n\}$ и писать 
+\begin{align}
+    \ \lim\limits_{n\to\infty} x_n = a \Leftrightarrow x_n \to a, n \to \infty, 
+\end{align} если выполнено следующее:
+\[
+\forall\varepsilon > 0\; \exists N(\varepsilon) \in\mathbb{N}: \forall n \ge N(\varepsilon) \to x_n \in U_\varepsilon(a)
+\]
+\end{definition}
+
+\begin{statement}
+Пусть $a \in \widehat{\ \mathbb{R}}, c \ge 1, \lim\limits_{n\to\infty} x_n = a$. Следующие условия эквивалентны:
+\begin{enumerate}
+    \item $\forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N}: \forall n \ge N(\varepsilon) \leftrightarrow x_n \in U_\varepsilon(a)$;
+    \item $\forall\varepsilon > 0\; \exists \tilde{N}(\varepsilon) \in \mathbb{N}: \forall n \ge \tilde{N}(\varepsilon) \leftrightarrow x_n \in U_{c\varepsilon}(a)$.
+\end{enumerate}
+\end{statement}
+\begin{proof}
+Так как $c \ge 1$, то $U_\varepsilon \subset U_{c\varepsilon}$, откуда получаем импликацию (1) $\to$ (2) (при $\tilde{N}(\varepsilon) = N(\varepsilon)$).
+Теперь докажем (2) $\to$ (1). Так как для любого $\ \varepsilon$, то возьмём $\ \varepsilon/c$, то $\ \forall\varepsilon > 0\; N(\varepsilon) := \tilde{N}(\ \varepsilon/c): n \ge \tilde{N}(\ \varepsilon/c) \to x_n \in U_{c\ \varepsilon/c}(a) = U_\varepsilon(a)$.
+\end{proof}
+
+\subsection{Свойства сходящихся последовательностей}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется сходящейся, если она имеет конечный предел. В противном случае она называется расходящейся.
+\end{definition}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется ограниченной, если множество значений её элементов ограничено. То есть
+\[
+\exists M \in [0; +\infty) : \forall n \in \mathbb{N} \rightarrow |x_n| \le M.
+\]
+\end{definition}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется бесконечно большой, если 
+\begin{align} \ \lim\limits_{n\to\infty} x_n = \infty.
+\end{align}
+\end{definition}
+
+Из свойств бесконечно больших последовательностей можно выделить, что они неограничены, а обратное неверно.
+
+\textit{Примечание.} Притом если
+$\lim\limits_{n\to\infty} x_n = -\infty $ или
+$\lim\limits_{n\to\infty} x_n = +\infty$
+$\Rightarrow \{x_n\} $\text{ – бесконечно большая.}
+
+Обратное неверно. Контрпример: $\{x_n\} = \{(-1)^n \cdot n\}, \forall n \in \mathbb{N}$. Она бесконечно большая, но при этом $\ \lim\limits_{n\to\infty} x_n \neq -\infty, \lim\limits_{n\to\infty} x_n \neq +\infty$.
+
+\begin{lemma}[Лемма о непересекающихся окрестностях]
+$\ \forall a, b \in \widehat{\ \mathbb{R}}, a \neq b\; \exists \varepsilon > 0 : U_\varepsilon(a) \cap U_\varepsilon(b) = \emptyset$.
+\end{lemma}
+\begin{proof}
+Возможны 4 случая:
+\begin{enumerate}
+    \item $a, b \in \mathbb{R}$. Тогда возьмём $\ \varepsilon = \frac{b-a}{2}$.
+    \item $-\infty < a < b = +\infty$.  $\ \varepsilon = \frac{1}{|a|+1}$  ($\ \varepsilon \le 1$).
+    \item $-\infty = a < b < +\infty$. $\ \varepsilon = \frac{1}{|b|+1}$.
+    \item  $-\infty = a < b = +\infty$.  $\ \varepsilon = 1$.
+\end{enumerate}
+Проверьте, что тогда окретсности не пересекаются.
+\end{proof}
+\begin{theorem}
+Если у последовательности $\{x_n\}$ существует предел в $\ \widehat{\ \mathbb{R}}$, то он единственен в $\ \mathbb{R}$.
+\end{theorem}
+\begin{proof}
+Предположим, что $\ \exists a,b \in \mathbb{R} \to a \neq b, \lim\limits_{n\to\infty} x_n = a, \lim\limits_{n\to\infty} x_n = b$.
+Тогда по лемме о непересекающихся окрестностях $\ \exists \varepsilon^* > 0: U_{\ \varepsilon^*}(a) \cap U_{\ \varepsilon^*}(b) = \emptyset$.
+Запишем определение предела:
+\begin{align*}
+\ \lim\limits_{n\to\infty} x_n = a \Leftrightarrow \forall\varepsilon > 0\; \exists N_1(\varepsilon) \in \mathbb{N}: \forall n \ge N_1(\varepsilon) \leftrightarrow x_n \in U_\varepsilon(a) \\
+\ \lim\limits_{n\to\infty} x_n = b \Leftrightarrow \forall\varepsilon > 0\; \exists N_2(\varepsilon) \in \mathbb{N}: \forall n \ge N_2(\varepsilon) \leftrightarrow x_n \in U_\varepsilon(b)
+\end{align*}
+Подставим $\ \varepsilon = \ \varepsilon^*$.
+Следовательно, если мы возьмём $n > \max\{N_1(\ \varepsilon^*), N_2(\ \varepsilon^*)\}$, то $x_n \in (U_{\ \varepsilon^*}(a) \cap U_{\ \varepsilon^*}(b)) = \emptyset$. Противоречие. Следовательно $a=b$.
+\end{proof}
+
+\textit{Примечание.} В $\ \widehat{\ \mathbb{R}}$ предел может быть не единственен. Если $+\ \infty$ — предел, то и $\ \infty$ — предел).
+
+\begin{theorem}
+Если последовательность $\{x_n\}$ сходится, то она ограничена. Обратное неверно.
+\end{theorem}
+\begin{proof}
+Пусть последовательность $\{x_n\}$ сходится, значит у неё есть предел, назовём его $a$, и этот предел — число. Но тогда по определению
+\[
+\forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N}: \forall n \ge N(\varepsilon) \to x_n \in U_\varepsilon(a).
+\]
+Тогда в частности $\ \exists N = N(1): \forall n \ge N(1) \rightarrow |x_n| < |a| + 1$ (следствие неравенства из предела).
+Поскольку вне хвоста конечное число элементов, то возьмём $M := \max\{|x_1|, |x_2|, \dots, |x_{N(1)}|, |a|+1\}$. Отсюда следует, $|x_n| \le M, \forall n \in \mathbb{N}$. \\
+Контрпример для обратного: $\{x_n\} = \{(-1)^n\}_{n=1}^\infty$ ограничена, но не является сходящейся. 
+\end{proof}
+
+\subsection{Свойства пределов сходящихся последовательностей, связанные с арифметическими операциями}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется бесконечно малой, если её предел равен 0.
+\end{definition}
+
+\begin{lemma}
+Произведение ограниченной и бесконечно малой последовательностей есть бесконечно малая последовательность. То есть, если $\{x_n\}$ — ограниченная последовательность, а $\{y_n\}$ бесконечно малая, то $\{z_n\} := \{x_n y_n\}_{n=1}^\infty$ — бесконечно малая последовательность.
+\end{lemma}
+\begin{proof}
+$\{x_n\}$ — ограниченная последовательность $\Leftrightarrow \exists M \ge 0 : \forall n \in \mathbb{N} \rightarrow |x_n| \le M$. \\
+$\{y_n\}$ — бесконечно малая последовательность $\Leftrightarrow \forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N} : \forall n \ge N(\varepsilon) \rightarrow |y_n-0| < \varepsilon$.
+\\Тогда $\ \forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N}: \forall n \ge N(\varepsilon) \rightarrow |x_n \cdot y_n| < M \cdot \varepsilon$. Откуда требуемое.
+\end{proof}
+
+\begin{lemma}
+Сумма, разность и произведение бесконечно малых последовательностей есть бесконечно малая последовательность, то есть, если $\{x_n\}$, $\{y_n\}$ — бесконечно малая $\Rightarrow$
+$\{x_n \pm y_n\}$, $\{x_n y_n\}$ — бесконечно малая.
+\end{lemma}
+\begin{proof}
+Докажем для суммы и разности. Тогда с учётом утверждения 2.1:
+\begin{align*}
+\ \forall\varepsilon > 0\; \exists N_1(\varepsilon) \in \mathbb{N}  : \forall n \ge N_1(\varepsilon) \rightarrow |x_n| \in U_{\ \varepsilon/2}(0) \\
+\ \forall\varepsilon > 0\; \exists N_2(\varepsilon) \in \mathbb{N} : \forall n \ge N_2(\varepsilon) \rightarrow |y_n| \in U_{\ \varepsilon/2}(0)
+\end{align*}
+
+Возьмём $N(\varepsilon) := \max\{N_1(\varepsilon), N_2(\varepsilon)\}$. Получим
+\[
+\ \forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N} : \forall n \ge N(\varepsilon) \to x_n \pm y_n \in U_\varepsilon(0).
+\]
+Тот факт, что $\{x_n \cdot y_n\}$ — бесконечно малая следует из того, что $\{x_n\}$ ограничена (а это следует из того, что она сходящаяся, так как она бесконечно малая) и $\{y_n\}$ — бесконечно малая.
+\end{proof}
+
+\begin{lemma}
+$\ \lim\limits_{n\to\infty} x_n = a \in \mathbb{R} \to$ последовательность $\{a - x_n\}$ бесконечно малая.
+\end{lemma}
+
+\begin{lemma}
+Пусть $a = \lim\limits_{n\to\infty} a_n, b = \lim\limits_{n\to\infty} b_n$, при этом $a, b \in \mathbb{R}$. Тогда
+\begin{align*}
+\ \lim\limits_{n\to\infty} (a_n \pm b_n) &= a \pm b \\
+\ \lim\limits_{n\to\infty} (a_n b_n) &= a \cdot b
+\end{align*}
+\end{lemma}
+\begin{proof}
+    Используйте лемму выше и свойства бесконечно малых последовательностей. Про уможение:
+    заметим, что $a_n b_n - ab = a_n b_n - a_n b + a_n b - ab = a_n(b_n - b) + b(a_n - a)$. Получает ограниченные на бесконечно малые.
+\end{proof}
+
+
+
+\begin{lemma}
+Пусть $x_n \neq 0, \forall n \in \mathbb{N}$ и $\ \exists \lim\limits_{n\to\infty} x_n = x: x \in \mathbb{R}, x \neq 0$. Тогда $\ \exists \lim\limits_{n\to\infty} \frac{1}{x_n} = \frac{1}{x}$.
+\end{lemma}
+\begin{proof}
+Покажем, что последовательность $\{1/x_n\}$ ограничена.
+Действительно, по определению предела получаем
+\[
+\ \forall\varepsilon > 0\; \exists N(\varepsilon) \in \mathbb{N} : \forall n \ge N \to x_n \in U_\varepsilon(x).
+\]
+Возьмём $\ \varepsilon = \frac{|x|}{2}$, то $\ \exists N^* \in \mathbb{N}: \forall n > N^* \to x_n \in U_{|x|/2}(x)$. \\
+Проверьте, что будет выполняться $\forall n > N^*, \frac{1}{|x_n|} \le \frac{2}{|x|}$. Это можно понять геометрически -- рисуйте окрестность \\
+Возьмём $M := \max\{\frac{1}{|x_1|}, \frac{1}{|x_2|}, \dots, \frac{1}{|x_{N^*}|}, \frac{2}{|x|}\} \Rightarrow \frac{1}{|x_n|} \le M, \forall n \in \mathbb{N} \to$ последовательность $\{1/x_n\}$ ограничена.
+Рассмотрим $\ \frac{1}{x_n} - \frac{1}{x} = \frac{x - x_n}{x x_n} = \frac{1}{x x_n} (x-x_n)$ и заметим, что $\{x - x_n\}$ бесконечно малая последовательность, а $\ \frac{1}{x x_n}$ ограничена, так как $\{1/x_n\}$ ограничена.
+Итого получаем $\ \frac{1}{x_n} - \frac{1}{x}$ — бесконечно малая $\ \to \lim\limits_{n\to\infty} \frac{1}{x_n} = \frac{1}{x}$.
+\end{proof}
+
+\textbf{Следствие.} Пусть $\ \exists \lim\limits_{n\to\infty} y_n = y, y \in \mathbb{R}$; $\ \exists \lim\limits_{n\to\infty} x_n = x, x \in \mathbb{R}, x \neq 0$ и $x_n \neq 0, \forall n \in \mathbb{N}$.
+Тогда $\ \exists \lim\limits_{n\to\infty} \frac{y_n}{x_n} = \frac{y}{x}$.
+\begin{proof}
+Достаточно воспользоваться предыдущей леммой и леммой о пределе произведения последовательностей и рассмотреть $\ \frac{y_n}{x_n}$ как $y_n \cdot \frac{1}{x_n}$.
+\end{proof}
+
+\subsection{Предельный переход в неравенствах}
+
+\begin{lemma}
+Пусть есть два элемента $A, B \in \widehat{\ \mathbb{R}}$ и две числовые последовательности $\{x_n\}$, $\{y_n\}$ такие, что:
+\[
+\exists \lim\limits_{n\to\infty} x_n = A, \quad \exists \lim\limits_{n\to\infty} y_n = B, \quad A < B.
+\]
+Тогда $\ \exists N \in \mathbb{N}: \forall n \ge N \to x_n < y_n$.
+\end{lemma}
+\begin{proof}
+По лемме о непересекающихся окрестностях
+\[
+\exists\varepsilon^* > 0 : U_{\ \varepsilon^*}(A) \cap U_{\ \varepsilon^*}(B) = \emptyset.
+\]
+А так как $A < B$, то $\ \forall x \in U_{\ \varepsilon^*}(A)$ и $\ \forall y \in U_{\ \varepsilon^*}(B) \to x < y$.
+Запишем определение предела:
+\begin{align*}
+\ \forall\varepsilon > 0\; \exists N_1(\varepsilon) \in \mathbb{N} : \forall n \ge N_1(\varepsilon) \to x_n \in U_\varepsilon(A); \\
+\ \forall\varepsilon > 0\; \exists N_2(\varepsilon) \in \mathbb{N} : \forall n \ge N_2(\varepsilon) \to y_n \in U_\varepsilon(B).
+\end{align*}
+Возьмём $N := \max\{N_1(\ \varepsilon^*), N_2(\ \varepsilon^*)\} \Rightarrow \forall n > N \to x_n \in U_{\ \varepsilon^*}(A)$ и $y_n \in U_{\ \varepsilon^*}(B) \Rightarrow x_n < y_n$, что нам и надо было.
+\end{proof}
+
+\begin{theorem}[Теорема о предельном переходе в неравенстве]
+Пусть $\ \exists \lim\limits_{n\to\infty} x_n = A, A \in \mathbb{R}$ и $\ \exists \lim\limits_{n\to\infty} y_n = B, B \in \mathbb{R}$. Пусть $\ \exists N \in \mathbb{N}: x_n \le y_n, \forall n \ge N$. Тогда $A \le B$.
+\end{theorem}
+\begin{proof}
+Предположим $A > B$. Воспользуйтесь леммой выше и придите к противоречию
+\end{proof}
+
+\begin{theorem}[Теорема о двух миллиционерах]
+Пусть $\{a_n\}$, $\{b_n\}$, $\{c_n\}$ — числовые последовательности. Пусть $\ \exists \lim\limits_{n\to\infty} a_n = \lim\limits_{n\to\infty} b_n = c, c \in \mathbb{R}$. Пусть $\ \exists N \in \mathbb{N}: \forall n \ge N \to a_n \le c_n \le b_n$. Тогда $\ \exists \lim\limits_{n\to\infty} c_n = c$.
+\end{theorem}
+\begin{proof}
+Распишем определение предела:
+\begin{align*}
+\ \lim\limits_{n\to\infty} a_n = c \Leftrightarrow \forall\varepsilon > 0\; \exists N_1(\varepsilon) \in \mathbb{N} : \forall n \ge N_1(\varepsilon) \to a_n \in (c-\varepsilon, c+\varepsilon); \\
+\ \lim\limits_{n\to\infty} b_n = c \Leftrightarrow \forall\varepsilon > 0\; \exists N_2(\varepsilon) \in \mathbb{N} : \forall n \ge N_2(\varepsilon) \to b_n \in (c-\varepsilon, c+\varepsilon);
+\end{align*}
+$\ \forall\varepsilon > 0\; \exists\tilde{N}(\varepsilon) := \max\{N_1(\varepsilon), N_2(\varepsilon), N\} \in \mathbb{N} : \forall n \ge \tilde{N}(\varepsilon) \to$
+$a_n \in (c-\varepsilon, c+\varepsilon);$
+$b_n \in (c-\varepsilon, c+\varepsilon);$
+$\ \Rightarrow c_n \in (c-\varepsilon, c+\varepsilon) \Leftrightarrow \exists \lim\limits_{n\to\infty} c_n = c$.
+\end{proof}
+
+\begin{theorem}
+Пусть $\ \exists \lim\limits_{n\to\infty} x_n = +\infty$ и $\ \exists N \in \mathbb{N}: \forall n > N \to y_n > x_n$. Тогда $\ \exists \lim\limits_{n\to\infty} y_n = +\infty$.
+Аналогично для $-\infty$.
+\end{theorem}
+\begin{proof}
+    Такая же идея, что и выше.
+\end{proof}
+
+\subsection{Пределы монотонных последовательностей}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется нестрого возрастающей (нестрого убывающей), если $\ \forall n \in \mathbb{N} \to x_{n+1} \ge x_n$ ($x_{n+1} \le x_n$). 
+\end{definition}
+
+\begin{definition}
+Последовательность $\{x_n\}$ называется монотонной, если она нестрого возрастает или нестрого убывает.
+\end{definition}
+
+\begin{theorem}[Теорема Вейерштрасса]
+Любая монотонная последовательность $\{x_n\}$ имеет предел в $\ \widehat{\ \mathbb{R}}$. При этом если $\{x_n\}$ нестрого возрастает, то $\ \exists \lim\limits_{n\to\infty} x_n = \sup\{x_n\}$.
+Соответственно, если $\{x_n\}$ нестрого убывает, то $\ \exists \lim\limits_{n\to\infty} x_n = \inf\{x_n\}$.
+\end{theorem}
+\begin{proof}
+Докажем для нестрого возрастающей последовательности. Для нестрого убывающей аналогично. \\
+Сначала рассмотрим случай ограниченной сверху последовательности. \\ По теореме о существовании супремума $\ \exists M = \sup\{x_n\}$. Покажем, что $\ \lim\limits_{n\to\infty} x_n = M$. В силу второго пункта определения супремума $\ \forall\varepsilon > 0\; \exists N \in \mathbb{N}: x_N > M - \varepsilon$. Отсюда в силу возрастания последовательности $\{x_n\}$ имеем $\ \forall\varepsilon > 0\; \exists N \in \mathbb{N}: \forall n \ge N \to x_n \ge x_N > M - \varepsilon$. В силу первого пункта определения супремума $\ \forall n \in \mathbb{N} \to x_n \le M$. Поэтому $\ \forall\varepsilon > 0\; \exists N \in \mathbb{N}: \forall n > N \to x_n \in U_\varepsilon(M)$, то есть $\ \lim\limits_{n\to\infty} x_n = M$.
+\\ 
+\\
+(в билете будет ограниченная последовательность)
+Теперь рассмотрим теперь случай, когда последовательность $\{x_n\}$ неограничена сверху. Тогда $\ \forall\varepsilon > 0\; \exists N: x_N > \frac{1}{\varepsilon}$. Отсюда в силу возрастания последовательности $\{x_n\}$ имеем $\ \forall\varepsilon > 0\; \exists N: \forall n > N \to x_n \ge x_N > \frac{1}{\varepsilon}$, то есть $x_n \in U_\varepsilon(+\infty)$, а значит $\ \lim\limits_{n\to\infty} x_n = +\infty$.
+\end{proof}
+
+
+\subsection{Число e}
+Определяется как предел последовательности $(1 + \frac{1}{n})^n$. Для этого покажите, что она возрастающая и ограниченная.
+\\
+Возрастание можно прочитать тут: https://dodem.ru/tasks/69/ \\
+Ограниченность: 
+\begin{align*}
+    (1 + \frac{1}{n})^n  = 1 + n \cdot \frac{1}{n} + \frac{n \cdot (n - 1)}{2!} \cdot \frac{1}{n^2} + \frac{n \cdot (n - 1) \cdot (n - 2)}{3!} \cdot \frac{1}{n^3} +  \dots  =\\
+    = 1 + 1 + \frac{n \cdot (n - 1)}{2!} \cdot \frac{1}{n^2} + \frac{n \cdot (n - 1) \cdot (n - 2)}{3!} \cdot \frac{1}{n^3} +  \dots < \\ <  1 + 1 + 1 = 3
+\end{align*}
+Заметим, что $\frac{1}{n!} < \frac{1}{2^{n-1}}$ и что каждое соответствующее слагаемое меньше $\frac{1}{n!}$, ведь, например, $\frac{n \cdot (n - 1) \cdot (n - 2)}{n^3} < 1$ аналогично и с другими. Откуда получаем оценку на $\frac{1}{2} + \frac{1}{4}  + \frac{1}{8} + \dots < 1$. Откуда требуемое. 
+\end{document}
