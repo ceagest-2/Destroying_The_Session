@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{<номер лекции>}
+\newcommand{\lectureTitle}{<название лекции>}
+\newcommand{\courseName}{<предмет>}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{<ваша цитата, родные>}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: ... \par}
+    {\large Автор: \href{https://www.youtube.com/watch?v=dQw4w9WgXcQ}{...} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{<название первой секции>}
+
+
+\end{document}

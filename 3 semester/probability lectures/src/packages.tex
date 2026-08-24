@@ -1,0 +1,88 @@
+% Кодировка и язык
+\usepackage[utf8]{inputenc}           % Кодировка исходного файла (UTF-8)
+\usepackage[T2A]{fontenc}             % Кодировка шрифтов для кириллицы
+\usepackage[english,russian]{babel}   % Локализация: русские названия, переносы
+
+% Поиск в PDF
+\usepackage{cmap}                     
+
+% Поля страницы
+\usepackage{geometry}
+\geometry{left=2cm, right=2cm, top=2cm, bottom=2cm}
+
+% Математика
+\usepackage{amsmath, amssymb, amsthm} % Базовые пакеты для математики
+\usepackage{mathtools}                % Расширение amsmath (доп. символы и окружения)
+
+% Картинки
+\usepackage{graphicx}                 % Вставка картинок (\includegraphics)
+\graphicspath{{pictures/}}            % Путь к папке с картинками
+\usepackage{float}                    % Позволяет использовать [H] для жёсткого позиционирования
+\usepackage{wrapfig}                  % Обтекание текста вокруг картинок
+
+% Таблицы
+\usepackage{array}                    % Расширенные возможности для таблиц
+\usepackage{booktabs}                 % Красивые таблицы (\toprule, \midrule, \bottomrule)
+\usepackage{multirow}                 % Объединение строк в таблицах
+\usepackage{tabularx}                 % Таблицы с автоматической шириной колонок
+\usepackage{ragged2e}                 % Улучшенное выравнивание (используется в tabularx)
+
+% Списки
+\usepackage{enumitem}                 % Гибкая настройка списков (itemize, enumerate)
+
+% Колонтитулы
+\usepackage{fancyhdr}                 
+
+% Гиперссылки
+\usepackage{xcolor}                   % Работа с цветами
+\usepackage{hyperref}                 % Гиперссылки, оглавление, перекрёстные ссылки
+
+% Умные ссылки
+\usepackage{cleveref}                 
+
+% Типографика
+\usepackage{microtype}                % Улучшает переносы и межсловные расстояния
+
+% Подписи к картинкам и таблицам
+\usepackage{caption}                  % Настройка подписей (шрифт, отступы)
+
+% Рисование схем и графиков
+\usepackage{tikz}                     % Рисование схем, графиков, диаграмм
+\usepackage{pgfplots}                 % Построение графиков функций (на основе tikz)
+\pgfplotsset{compat=newest}           % Версия совместимости pgfplots
+
+% Алгоритмы и код
+\usepackage{algorithm}                % Окружения для алгоритмов
+\usepackage{algorithmic}              % Синтаксис для алгоритмов
+\usepackage{listings}                 % Вставка кода с подсветкой синтаксиса
+
+
+% Настройка нумерации секций и подсекций
+\renewcommand{\thesection}{\arabic{section}}                   
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}} 
+
+
+% Настройка списков: убираем лишние отступы слева
+\setlist[itemize]{leftmargin=}
+\setlist[enumerate]{leftmargin=}
+
+
+% Определение окружений для теорем, лемм, определений и т.д.
+% Нумерация привязана к номеру секции
+\newtheorem{theorem}{Теорема}[section]
+\newtheorem{definition}{Определение}[section]
+\newtheorem{remark}{Замечание}[section]
+\newtheorem{lemma}{Лемма}[section]
+\newtheorem{example}{Пример}[section]
+\newtheorem{consequence}{Следствие}[section]
+\newtheorem{algorithmm}{Алгоритм}
+\newtheorem{question}{Вопрос}[section]
+\newtheorem{answer}{Ответ}[section]
+\newtheorem{statement}{Утверждение}[section]
+
+
+% Определение цветов
+\definecolor{pblue}{rgb}{0.13,0.13,1}    
+\definecolor{pgreen}{rgb}{0,0.5,0}       
+\definecolor{pred}{rgb}{0.9,0,0}         
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
