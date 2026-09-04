@@ -1,0 +1,242 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\DeclareMathOperator{\DIF}{DIF}
+\DeclareMathOperator{\Lip}{Lip}
+\DeclareMathOperator{\LocLip}{LocLip}
+
+\newcommand{\lectureNumber}{1}
+\newcommand{\lectureTitle}{Уравнения, разрешимые относительно старшей производной. Задача Коши. Линейные однородные ДУ с постоянными коэффициентами}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Только солнце, только небо и река!}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/ceagest}{Мастер спорта по эффектному сну на пляже} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Уравнения, разрешённые относительно старшей производной}
+
+\begin{definition}
+    \textbf{Обыкновенным дифференциальным уравнением} называется 
+    \begin{equation} \label{eq:1}
+        F(x, y, y', \ldots, y^{(n)}) = 0
+    \end{equation}
+    Здесь $x \in \mathcal{I} \subset \mathbb{R}$ --- интервал, $y = y(x)$, $y \in \DIF^n(\mathcal{I}, \mathbb{R})$, $n \geq 1$. Полагается также, что $F$ зависит от $y^{(n)}$ \textbf{не} фиктивно. Число $n$ называется \textbf{порядком} ДУ (здесь и далее не будем уточнять, что ДУ обыкновенное, так как работать мы будем только с такими).
+\end{definition}
+
+\begin{definition}
+    Функция $\varphi \in \DIF^{n}(\mathcal{I}, \mathbb{R})$ --- \textbf{решение} (\ref{eq:1}), если
+    \[F(x, \varphi(x), \varphi'(x), \ldots, \varphi^{(n)}(x)) = 0 \; \; \forall x \in \mathcal{I}\]
+    \textbf{Общее} решение ДУ (\ref{eq:1}) --- множество всех решений уравнения (\ref{eq:1}).
+\end{definition}
+
+\begin{definition}
+    Уравнение (\ref{eq:1}) называется \textbf{уравнением, разрешённым относительно старшей производной}, если $\exists G \subset \mathbb{R}^{(n + 1)}$ --- область и $\exists \Phi \colon G \to \mathbb{R}$ такие, что
+    \[y^{(n)} = \Phi(x, y, y', \ldots, y^{(n - 1)})\] 
+    Важно отметить, что равенство выше и (\ref{eq:1}) эквивалентны.
+\end{definition}
+
+\begin{definition}
+    Система ДУ называется \textbf{системой ДУ в нормальной форме}, если она может быть записана в виде
+    \begin{equation} \label{eq:2}
+        \begin{cases}
+            y_1' = f_1(x, y_1, \ldots, y_n) \\
+            y_2' = f_2(x, y_1, \ldots, y_n) \\
+            \vdots \\
+            y_n' = f_n(x, y_1, \ldots, y_n)
+        \end{cases}
+    \end{equation}
+    Здесь $G \subset \mathbb{R}^{n + 1}$ --- область, $f_k \colon G \to \mathbb{R}$ для всех $k \in \{1, \ldots, n\}$.
+\end{definition} \leavevmode
+\\
+Для удобства работы и компактности записи положим
+
+\begin{equation*}
+    y(x) = 
+    \begin{pmatrix}
+        y_1(x) \\
+        \vdots \\
+        y_n(x)
+    \end{pmatrix}
+    \quad \quad \quad
+    f(x, y) = 
+    \begin{pmatrix}
+        f_1(x, y) \\
+        \vdots \\
+        f_n(x, y)
+    \end{pmatrix}
+\end{equation*} \leavevmode
+\\
+Тогда систему (\ref{eq:2}) можно записать так
+
+\begin{equation} \label{eq:3}
+    y' = f(x, y)
+\end{equation} \leavevmode
+\\
+Именно такой формой записи мы будем преимущественно пользоваться дальше.
+
+\begin{remark}
+    Любое ДУ (\ref{eq:1}), разрешённое относительно старшей производной, может быть записано в виде системы ДУ в нормальной форме.
+\end{remark}
+
+\begin{proof}
+    Определим
+    \begin{equation*}
+        \begin{cases}
+            y_1 := y \\
+            y_2 := y_1' = y' \\
+            y_3 = y_2' = y_1'' = y'' \\
+            \vdots \\
+            y_n := y_{(n- 1)}' = y^{(n - 1)}
+        \end{cases}
+    \end{equation*}
+    Пользуясь этими обозначениями и разрешённостью относительно старшей производной, тривиально имеем
+    \begin{equation*}
+        \begin{cases}
+            y_1' = y_2 \\
+            y_2' = y_3 \\
+            \vdots \\
+            y_{(n - 1)}' = y_n \\
+            y_n' = y^{(n)} = \Phi(x, y_1, y_2, \ldots, y_n)
+        \end{cases}
+    \end{equation*}
+    Запишем ещё это добро в векторном виде
+    \[f(x, y_1, \ldots, y_n) = 
+    \begin{pmatrix}
+        y_2 \\
+        y_3 \\
+        \vdots \\
+        y_n \\
+        \Phi(x, y_1, y_2, \ldots, y_n)
+    \end{pmatrix}\]
+\end{proof}
+
+\section{Формулировка теоремы о существовании и единственности решения задачи Коши}
+
+\paragraph{Задача Коши.} Пусть $G \subset \mathbb{R}^{(n + 1)}$ --- область, $f \colon G \to \mathbb{R}^n$, $x \in \mathcal{I} \subset \mathbb{R}$ --- интервал, $y \colon \mathcal{I} \to \mathbb{R}^n$. Пусть $(x_0, y_0) \in G$. Тогда задачей Коши (ЗК) для ДУ $y' = f(x, y)$ называется
+
+\begin{equation} \label{eq:4}
+    \begin{cases}
+        y' = f(x, y) \\
+        y(x_0) = y_0
+    \end{cases}
+\end{equation}
+
+\begin{definition}
+    Решением ЗК (\ref{eq:4}) называется такая функция $y \in \DIF(\mathcal{I}, \mathbb{R}^n)$, что
+    \begin{enumerate}
+        \item $y'(x) = f(x, y(x)) \; \; \forall x \in \mathcal{I}$
+        \item $y(x_0) = y_0$
+    \end{enumerate}
+\end{definition}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\linewidth]{задача Коши.jpg}
+\end{figure} \leavevmode
+\\
+Для удобства далее будем обозначать $\left\lvert \xi \right\rvert := \left\lVert \xi \right\rVert_e = \sqrt{\xi_1^2 + \ldots + \xi_n^2}$, $\xi = (\xi_1, \ldots, \xi_n)^T \in \mathbb{R}^n$.
+
+\begin{definition}
+    Будем говорить, что отображение $f \colon G \to \mathbb{R}^n$ \textbf{липшицево} по $y$ в области $G$, если 
+    \[\exists L > 0: \forall (x, y_1), (x, y_2) \in G \implies \left\lvert f(x, y_1) - f(x, y_2) \right\rvert \leq L \left\lvert y_1 - y_2 \right\rvert\]
+    Множество всех липшицевых отображений по $y$ в области $G$ обозначается $\Lip_y (G)$.
+\end{definition}
+
+\begin{definition}
+    Будем говорить, что $f$ \textbf{локально липшицево} по $y$ в области $G$, если 
+    \[\forall (x_0, y_0) \in G \; \; \exists \varepsilon > 0: f \in \Lip_y(B_{\varepsilon} (x_0, y_0))\]
+    Множество всех локально липшицевых отображений по $y$ в области $G$ обозначается $\LocLip_y (G)$.
+\end{definition}
+
+\begin{definition}
+    Пусть $y_1 \colon \mathcal{I}_1 \to \mathbb{R}^n$, $y_2 \colon \mathcal{I}_2 \to \mathbb{R}^n$ --- два решения ЗК (\ref{eq:4}), $\mathcal{I}_1, \mathcal{I}_2 \subset \mathbb{R}$ --- интервалы, $x_0 \in \mathcal{I}_1 \cap \mathcal{I}_2$. Говорят, что $y_1(x)$ и $y_2(x)$ \textbf{локально совпадают}, если
+    \[\exists \mathcal{I} \subset \mathcal{I}_1, \; \mathcal{I} \subset \mathcal{I}_2, \; x_0 \in \mathcal{I}: y_1(x) = y_2(x) \; \; \forall x \in \mathcal{I}\]
+\end{definition}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\linewidth]{локально совпадающие функции.jpg}
+\end{figure}
+
+\begin{exercise}
+    Пусть $f, f'_y \in C(G)$, где $G \subset \mathbb{R}^2$ --- область. Тогда для всякого компакта $K \subset G$ выполнено $f \in \Lip_y (K)$.
+\end{exercise}
+
+\begin{theorem}[О существовании и единственности решения ЗК]
+    Пусть $f \in C(G)$, $f \in \LocLip_y(G)$, $G \subset \mathbb{R}^{(n + 1)}$ --- область. Тогда $\forall (x_0, y_0) \in G \; \exists \mathcal{I} \subset \mathbb{R}$ --- интервал такой, что $x_0 \in \mathcal{I}$, и $\exists y \colon \mathcal{I} \to \mathbb{R}^n$ такая, что
+    \begin{equation*}
+        \begin{cases}
+            y'(x) = f(x, y(x)) \; \; \forall x \in \mathcal{I} \\
+            y(x_0) = y_0 
+        \end{cases}
+    \end{equation*}
+    Причём такая функция локально единственна, то есть любое другое решение локально совпадает с ней.
+\end{theorem}
+
+\section{Линейные однородные ДУ с постоянными коэффициентами}
+
+В этом блоке нас будут интересовать ДУ следующего вида:
+\begin{equation} \label{eq:5}
+    y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_{n - 1} y' + a_n y = 0
+\end{equation} \leavevmode
+\\
+Здесь $a_1, a_2, \ldots, a_n \in \mathbb{R} \; (\mathbb{C})$, $y \colon \mathbb{R} \to \mathbb{C}$.
+
+\begin{remark}
+    Пространство решений уравнения (\ref{eq:5}) является линейным пространством.
+\end{remark}
+
+\begin{proof}
+    Непосредственной подстановкой в (\ref{eq:5}) убеждаемся, что справедливы утверждения:
+    \begin{enumerate}
+        \item Если $y_1(x)$ и $y_2(x)$ --- решения (\ref{eq:5}), то $y(x) = y_1(x) + y_2(x)$ --- тоже решение (\ref{eq:5}).
+        \item Если $y(x)$ --- решение (\ref{eq:5}), то $c \cdot y(x)$ --- тоже решение (\ref{eq:5}) $\forall c \in \mathbb{R}$.
+    \end{enumerate}
+    Заметив, что нулевая функция также лежит в пространстве решений (\ref{eq:5}), а все остальные аксиомы линейного пространства тривиально выполнены, получаем то, что и требовалось.
+\end{proof}
+
+\begin{definition}
+    \textbf{Характеристическим многочленом} уравнения (\ref{eq:5}) называется
+    \[\chi(\lambda) = \lambda^n + a_1 \lambda^{n - 1} + \ldots + a_{n - 1} \lambda + a_n\]
+    \textbf{Характеристическим уравнением} называется $\chi (\lambda) = 0$.
+\end{definition}
+
+\end{document}
