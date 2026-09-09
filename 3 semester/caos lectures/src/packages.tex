@@ -4,11 +4,11 @@
 \usepackage[english,russian]{babel}   % Локализация: русские названия, переносы
 
 % Поиск в PDF
-\usepackage{cmap}                     
+\usepackage{cmap}
 
 % Поля страницы
 \usepackage{geometry}
-\geometry{left=2cm, right=2cm, top=2cm, bottom=2cm}
+\geometry{left=3.8cm, right=3.8cm, top=2.5cm, bottom=2.5cm, paperheight=29.7cm}
 
 % Математика
 \usepackage{amsmath, amssymb, amsthm} % Базовые пакеты для математики
@@ -31,14 +31,14 @@
 \usepackage{enumitem}                 % Гибкая настройка списков (itemize, enumerate)
 
 % Колонтитулы
-\usepackage{fancyhdr}                 
+\usepackage{fancyhdr}
 
 % Гиперссылки
 \usepackage{xcolor}                   % Работа с цветами
 \usepackage{hyperref}                 % Гиперссылки, оглавление, перекрёстные ссылки
 
 % Умные ссылки
-\usepackage{cleveref}                 
+\usepackage{cleveref}
 
 % Типографика
 \usepackage{microtype}                % Улучшает переносы и межсловные расстояния
@@ -56,10 +56,95 @@
 \usepackage{algorithmic}              % Синтаксис для алгоритмов
 \usepackage{listings}                 % Вставка кода с подсветкой синтаксиса
 
+\usepackage{soul}                     % Выделение текста: подчёркивание, зачёркивание, подсветка
+\usepackage{multicol}                 % Многоколоночная вёрстка текста
+\usepackage{titlesec}                 % Настройка внешнего вида заголовков секций
+\usepackage{parskip}                  % Отступы между абзацами вместо красной строки
+\usepackage{setspace}                 % Настройка межстрочного интервала
+\usepackage{tcolorbox}                % Цветные блоки для заметок, цитат и выделений
+
+% Палитра Quiet Light из VS Code
+\definecolor{quietLightForeground}{HTML}{333333}
+\definecolor{quietLightEditorBg}{HTML}{F5F5F5}
+\definecolor{quietLightPanelBg}{HTML}{F2F2F2}
+\definecolor{quietLightBorder}{HTML}{C9D0D9}
+\definecolor{quietLightComment}{HTML}{AAAAAA}
+\definecolor{quietLightKeyword}{HTML}{4B69C6}
+\definecolor{quietLightType}{HTML}{7A3E9D}
+\definecolor{quietLightConstant}{HTML}{9C5D27}
+\definecolor{quietLightString}{HTML}{448C27}
+\definecolor{quietLightFunction}{HTML}{AA3731}
+\definecolor{quietLightPunctuation}{HTML}{777777}
+
+% Совместимость со старыми именами цветов
+\colorlet{pblue}{quietLightKeyword}
+\colorlet{pgreen}{quietLightString}
+\colorlet{pred}{quietLightFunction}
+\colorlet{pgrey}{quietLightPunctuation}
+
+\onehalfspacing
+
+\titleformat{\section}
+  {\Large\bfseries}
+  {\thesection}
+  {0.7em}
+  {}
+
+\titleformat{\subsection}
+  {\large\bfseries}
+  {\thesubsection}
+  {0.7em}
+  {}
+
+\lstset{
+    basicstyle=\ttfamily\small\color{quietLightForeground},
+    backgroundcolor=\color{quietLightEditorBg},
+    frame=single,
+    rulecolor=\color{quietLightBorder},
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    keywordstyle=\color{quietLightKeyword}\bfseries,
+    morekeywords=[2]{define,elif,else,endif,error,if,ifdef,ifndef,include,line,pragma,undef,warning},
+    keywordstyle=[2]\color{quietLightKeyword},
+    deletekeywords={bool,char,double,float,int,long,short,signed,unsigned,void},
+    morekeywords=[3]{bool,char,double,float,int,long,short,signed,unsigned,void,size_t,string},
+    keywordstyle=[3]\color{quietLightType},
+    identifierstyle=\color{quietLightType},
+    commentstyle=\color{quietLightComment}\itshape,
+    stringstyle=\color{quietLightString},
+    numberstyle=\color{quietLightConstant},
+}
+
+\lstdefinestyle{nolint}{
+    basicstyle=\ttfamily\small\color{quietLightForeground},
+    backgroundcolor=\color{quietLightPanelBg},
+    columns=fullflexible,
+    keepspaces=true,
+    breaklines=false,
+    keywordstyle=\color{quietLightKeyword},
+    commentstyle=\color{quietLightKeyword},
+    stringstyle=\color{quietLightKeyword},
+    numberstyle=\color{quietLightKeyword},
+}
+
+\newcommand{\nolint}{\lstinline[style=nolint]}
+
+\newtcolorbox{habrquote}{
+    colback=quietLightPanelBg,
+    colframe=quietLightBorder,
+    boxrule=0.4pt,
+    arc=2pt,
+    left=8pt,
+    right=8pt,
+    top=6pt,
+    bottom=6pt
+}
 
 % Настройка нумерации секций и подсекций
-\renewcommand{\thesection}{\arabic{section}}                   
-\renewcommand{\thesubsection}{\thesection.\arabic{subsection}} 
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 
 
 % Настройка списков: убираем лишние отступы слева
@@ -79,10 +164,3 @@
 \newtheorem{question}{Вопрос}[section]
 \newtheorem{answer}{Ответ}[section]
 \newtheorem{statement}{Утверждение}[section]
-
-
-% Определение цветов
-\definecolor{pblue}{rgb}{0.13,0.13,1}    
-\definecolor{pgreen}{rgb}{0,0.5,0}       
-\definecolor{pred}{rgb}{0.9,0,0}         
-\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
