@@ -1,0 +1,422 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{1}
+\newcommand{\lectureTitle}{Основы SQL}
+\newcommand{\courseName}{Базы данных}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{О, это тот конспект по картинкам из презы и английскому}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    morekeywords={LIMIT, IDENTITY, GENERATED, SERIAL, RENAME, COLUMN, TIMESTAMP, BOOLEAN, VARCHAR, INT},
+    basicstyle=\normalfont\ttfamily\small,
+    keywordstyle=\color{pblue}\bfseries,
+    stringstyle=\color{pgreen},
+    commentstyle=\color{pgrey}\itshape,
+    showstringspaces=false,
+    columns=fullflexible,
+    keepspaces=true,
+    xleftmargin=1.5em,
+    aboveskip=0.6em,
+    belowskip=0.6em,
+    frame=none,
+}
+\lstset{style=sqlstyle}
+
+\newcommand{\slide}[2][0.95]{%
+  \begin{center}\includegraphics[width=#1\linewidth]{#2}\end{center}%
+}
+
+\emergencystretch=3em
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+    \centering
+
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+
+    \vspace*{\fill}
+
+    {\large Лектор: Созыкин А.В. \par}
+    {\large Автор: \href{impelix.t.me}{Anton} \par}
+
+\end{titlepage}
+
+\hypersetup{pageanchor=true}
+\pagenumbering{arabic}
+
+\section{Типы баз данных}
+
+\begin{itemize}\itemsep0pt
+    \item \textbf{Сетевые и иерархические} --- данные организованы в виде иерархии/сети.
+    \item \textbf{Реляционные} --- данные представлены в виде таблиц, связанных между собой.
+    \item \textbf{Big Data, NoSQL} --- данные хранятся в неструктурированном виде на
+    распределённом кластере серверов.
+\end{itemize}
+
+\section{История}
+
+\begin{itemize}\itemsep0pt
+    \item \textbf{1970} --- реляционная модель данных. Эдгар Кодд разработал реляционную модель данных.
+    \item \textbf{1974} --- язык SEQUEL. Реймонд Бойс и Дональд Чамберлин в IBM создали язык запросов
+    к реляционной бд SEQUEL (Structured English Query Language).
+    \item \textbf{1979} --- выход систем управления бд с поддержкой SEQUEl(sql).
+    \item \textbf{1986} --- стандартизация SQL. Последняя версия стандарта --- SQL:2023 (с ревизией от 2026 года).
+\end{itemize}
+
+\section{СУБД}
+
+Популярные реляционные СУБД: Oracle Database, Microsoft SQL Server, IBM DB2, MySQL, MariaDB,
+PostgreSQL, SQLite.
+
+Популярность СУБД основана на опросе от
+(\href{https://survey.stackoverflow.co/2025/technology\#most-popular-technologies-database-database}{опросе от stack overflow в 2025}): PostgreSQL --- 55{,}6\,\%, MySQL --- 40{,}5\,\%, SQLite --- 37{,}5\,\%,
+Microsoft SQL Server --- 30{,}1\,\%, Redis --- 28\,\%, MongoDB --- 24\,\%, MariaDB --- 22{,}5\,\%,
+Elasticsearch --- 16{,}7\,\%, Oracle --- 10{,}6\,\%.
+
+Еще SQL используют  в нереляционных базах данных: Apache Hive, Apache Spark SQL, Apache Drill.
+
+\subsection{Почему SQL популярен}
+
+\begin{itemize}\itemsep0pt
+    \item Строгая математическая основа: реляционная модель данных, реляционная алгебра,
+    реляционное исчисление.
+    \item Стандарты: ANSI SQL-86 --- SQL:2023.
+    \item Большое количество людей знают SQL: многие компании, которые делают системы управления базами данных
+    реализуют поддержку SQL для расширения количества пользователей.
+\end{itemize}
+
+\section{Таблица супергероев}
+
+далее примеры на основе
+\href{https://github.com/fivethirtyeight/data/tree/master/comic-characters}{разных героев комиксов и вселенных},
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{start.png}
+\end{center}
+\section{Оператор SELECT}
+
+\begin{lstlisting}
+SELECT * FROM superheroes
+\end{lstlisting}
+\slide{select_all.png}
+Глобально мы получим вывод как сверху, выбираем все столбцы из таблицы \texttt{superheroes}
+\subsection{Выбор столбцов в SELECT}
+
+\begin{lstlisting}
+SELECT name, appearances
+FROM superheroes
+\end{lstlisting}
+\begin{center}
+    \includegraphics[width=0.6\linewidth]{ref.png}
+\end{center}
+\subsection{Псевдонимы столбцов в SELECT}
+
+\begin{lstlisting}
+SELECT name AS hero_name,
+       appearances
+FROM superheroes
+\end{lstlisting}
+\begin{center}
+    \includegraphics[width=0.45\linewidth]{alias.png}
+\end{center}
+формально \texttt{AS} можно опустить и писать так:
+\begin{lstlisting}
+SELECT name hero_name,
+       appearances
+FROM superheroes
+\end{lstlisting}
+Но тогда читаемость падает, но это выбор каждого
+\subsection{Выбор уникальных значений}
+
+\begin{lstlisting}
+SELECT DISTINCT align
+FROM superheroes
+\end{lstlisting}
+\slide[0.33]{distinct_align.png}
+
+\begin{lstlisting}
+SELECT DISTINCT eye
+FROM superheroes
+\end{lstlisting}
+\slide[0.33]{distinct_eye.png}
+
+Результат: \texttt{Black Eyeballs}, \texttt{One Eye}, \texttt{Purple Eyes}, \texttt{Orange Eyes},
+\ldots{} (24 строки).
+
+\subsection{Ограничение количества строк}
+
+\begin{lstlisting}
+SELECT DISTINCT hair
+FROM superheroes
+LIMIT 10
+\end{lstlisting}
+\slide[0.30]{limit10.png}
+
+\section{Выбор строк: WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE gender = 'Female Characters'
+\end{lstlisting}
+\slide{where_gender.png}
+
+\subsection{Операторы сравнения}
+
+\begin{center}
+\begin{tabular}{@{}l l@{}}
+    \toprule
+    \textbf{Оператор} & \textbf{Назначение} \\
+    \midrule
+    \texttt{=}               & Равно \\
+    \texttt{<>}, \texttt{!=} & Неравно \\
+    \texttt{>}               & Больше \\
+    \texttt{>=}              & Больше или равно \\
+    \texttt{<}               & Меньше \\
+    \texttt{<=}              & Меньше или равно \\
+    \texttt{between}         & Значение находится в указанном диапазоне \\
+    \texttt{in}              & Значение входит в список \\
+    \texttt{like}            & Проверка строки на соответствие шаблону \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Использование BETWEEN в WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE year BETWEEN 2000 AND 2005
+\end{lstlisting}
+\slide{between.png}
+
+\subsection{Использование IN в WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE hair IN ('Strawberry Blond Hair', 'Red Hair', 'Auburn Hair')
+\end{lstlisting}
+\slide{in.png}
+
+\subsection{Использование LIKE в WHERE}
+
+Специальные символы в шаблонах \texttt{LIKE}:
+\begin{itemize}\itemsep0pt
+    \item \texttt{\%} --- любое количество любых символов (включая 0);
+    \item \texttt{\_} --- ровно один любой символ.
+\end{itemize}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE hair LIKE '%Blond%'
+\end{lstlisting}
+\slide{like.png}
+
+\subsection{Логические операции}
+
+\begin{center}
+\begin{tabular}{@{}l l@{}}
+    \toprule
+    \textbf{Операция} & \textbf{Назначение} \\
+    \midrule
+    \texttt{AND} & Логическое И \\
+    \texttt{OR}  & Логическое ИЛИ \\
+    \texttt{NOT} & Логическое НЕ \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Использование AND в WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE gender = 'Female Characters'
+      AND
+      align = 'Bad Characters'
+\end{lstlisting}
+\slide{and.png}
+
+\subsubsection{Использование OR в WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE hair = 'Red Hair'
+  OR hair = 'Strawberry Blond Hair'
+  OR hair = 'Auburn Hair'
+\end{lstlisting}
+\slide{or.png}
+
+\subsubsection{Использование NOT в WHERE}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE hair NOT IN ('Blond Hair', 'Black Hair', 'Brown Hair', 'Red Hair')
+\end{lstlisting}
+\slide{notin.png}
+
+\section{Сортировка: ORDER BY}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+ORDER BY year
+\end{lstlisting}
+\slide{orderby_year.png}
+
+\subsection{Порядок сортировки}
+
+Порядок сортировки в \texttt{ORDER BY}:
+\begin{itemize}\itemsep0pt
+    \item \texttt{ASC} (ascending) --- сортировка по возрастанию;
+    \item \texttt{DESC} (descending) --- сортировка по убыванию.
+\end{itemize}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+ORDER BY appearances DESC
+\end{lstlisting}
+\slide{orderby_desc.png}
+
+\subsection{Сортировка и ограничение количества строк}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+WHERE align = 'Bad Characters'
+  AND gender = 'Female Characters'
+ORDER BY appearances DESC
+LIMIT 5
+\end{lstlisting}
+\slide{orderby_limit.png}
+
+\subsection{Сортировка по нескольким столбцам}
+
+\begin{lstlisting}
+SELECT *
+FROM superheroes
+ORDER BY year, appearances
+\end{lstlisting}
+\slide{orderby_multi.png}
+
+\section{SQL --- декларативный язык}
+В джаве и c++ мы привыкли описывать как получить результат, а тут мы описываем какой хотим увидеть результат. В этом и основное отличие sql.
+
+\section{Создание и изменение таблиц}
+
+\begin{lstlisting}
+CREATE TABLE superheroes(
+    id INT,
+    name VARCHAR(100),
+    align VARCHAR(30),
+    eye VARCHAR(30),
+    hair VARCHAR(30),
+    gender VARCHAR(30),
+    appearances INT,
+    year INT,
+    universe VARCHAR(10)
+)
+\end{lstlisting}
+
+\subsection{Типы данных в SQL}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l >{\RaggedRight}X@{}}
+    \toprule
+    \textbf{Тип данных} & \textbf{Назначение} \\
+    \midrule
+    \texttt{CHARACTER(n)} (\texttt{CHAR(n)}) & Строка фиксированной длины $n$ \\
+    \texttt{CHARACTER VARYING(n)} (\texttt{VARCHAR(n)}) & Строка переменной длины, максимальная длина $n$ \\
+    \texttt{BOOLEAN} & Логический тип данных \\
+    \texttt{INTEGER} (\texttt{INT}) & Целое число \\
+    \texttt{NUMERIC(p,s)} & Действительное число ($p$ --- количество значащих цифр, $s$ --- количество цифр после запятой). Хранится точно \\
+    \texttt{REAL} & Действительное число одинарной точности, формат IEEE 754 \\
+    \texttt{DOUBLE PRECISION} & Действительное число двойной точности, формат IEEE 754 \\
+    \texttt{DATE} & Дата \\
+    \texttt{TIMESTAMP} & Дата и время \\
+    \bottomrule
+\end{tabularx}
+\end{center}
+Иногда деньги хранятся в виде целого числа, представляющего количество центов, чтобы избежать проблем с точностью. А иногда используют \texttt{DECIMAL} или \texttt{NUMERIC} с фиксированной точностью. Не стоит хранить в даблах или флоатах, так как из за специфики хранения этих чисел, можно в какой то момент получить у пользователь на копейку больше или меньше, чем он должен был получить.
+\subsection{Первичный ключ}
+
+\begin{lstlisting}
+CREATE TABLE superheroes(
+    id INT PRIMARY KEY,
+    ...
+)
+\end{lstlisting}
+
+Заполнение первичного ключа, чтобы он сам проставлялся в таблице при добавлении новых строк:
+
+\begin{lstlisting}
+CREATE TABLE superheroes(
+    id INT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    ...
+)
+\end{lstlisting}
+
+\begin{lstlisting}
+CREATE TABLE superheroes(
+    id SERIAL PRIMARY KEY,
+    ...
+)
+\end{lstlisting}
+
+\subsection{Удаление таблицы}
+
+\begin{lstlisting}
+DROP TABLE superheroes
+\end{lstlisting}
+
+\subsection{Изменение таблиц}
+
+\begin{lstlisting}
+ALTER TABLE superheroes ADD COLUMN alive BOOLEAN;
+
+ALTER TABLE superheroes
+    ADD COLUMN first_appearance TIMESTAMP;
+
+ALTER TABLE superheroes DROP COLUMN year;
+
+ALTER TABLE superheroes RENAME COLUMN name TO hero_name;
+
+ALTER TABLE superheroes RENAME TO comic_characters;
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{iamthedanger.png}
+    \caption*{Картинок на эту часть нет, держите Уолтер Вайта}
+\end{figure}
+\end{document}
