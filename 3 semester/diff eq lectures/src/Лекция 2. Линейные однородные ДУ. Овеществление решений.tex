@@ -1,0 +1,292 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\DeclareMathOperator{\Rere}{Re}
+\DeclareMathOperator{\Imim}{Im}
+
+\newcommand{\lectureNumber}{2}
+\newcommand{\lectureTitle}{Линейные однородные ДУ с постоянными коэффициентами. Овеществление решений}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Тьфу ты! Как же тяжело дело иметь с порядочными людьми!}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!70!black,
+  citecolor=blue!70!black,
+  filecolor=blue!70!black,
+  urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+  \centering
+  
+  {\large Московский физико-технический институт \par}
+  {\large Высшая школа программной инженерии \par}
+  \vspace{2cm}
+
+  {\Large \textbf{\courseName} \par}
+  {\large \semester \par}
+  
+  \vspace*{\fill}
+
+  {\Huge \textbf{Лекция \lectureNumber} \par}
+  {\Huge \textbf{\lectureTitle} \par}
+  
+  \vspace*{\fill}
+  
+  {\large Лектор: Саулин С.М. \par}
+  {\large Автор: \href{t.me/sol_m_07}{Соля} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Комплексные числа}
+
+\begin{definition}
+  $\mathbb{C}$ (множество комплексных чисел) --- это множество упорядоченных пар вещественных чисел $(x, y)$ с введёнными следующим образом операциями:
+  \begin{enumerate}
+    \item $(x_1, y_1) \pm (x_2, y_2) := (x_1 \pm x_2, y_1 \pm y_2)$
+    \item $(x_1, y_1) \cdot (x_2, y_2) := (x_1 \cdot x_2 - y_1 \cdot y_2, x_1 \cdot y_2 + x_2 \cdot y_1)$
+  \end{enumerate} 
+\end{definition}
+
+\begin{remark}
+  Непосредственно проверяется, что полученное множество является полем.
+\end{remark}
+
+\begin{remark}
+  Мы отождествляем $\mathbb{R}$ с парами вида $(x, 0)$. Тогда при $t \in \mathbb{R}$: \[t (x, y) = (t, 0) \cdot (x, y) = (tx, ty)\]
+\end{remark}
+
+\begin{definition}
+  Положим $i := (0, 1)$.
+\end{definition}
+
+\begin{definition}
+  Алгебраическая запись числа $z$ имеет вид $z = x + i \cdot y$ 
+\end{definition}
+
+\begin{definition}
+  Если $z = x + i \cdot y$, то $x$ называется вещественной частью комплексного числа $z$, а $y$ называется мнимой частью $z$: \[x = \Rere z, \quad y = \Imim z\]
+\end{definition}
+
+\begin{remark}
+  Обозначим за $z$ произвольную комплексную переменную.
+\end{remark}
+
+\begin{definition}
+  Если $z \in \mathbb{C}$, то модуль комплексного числа $z$: \[|z| := \sqrt{x^2 + y^2} \geq 0\]
+\end{definition}
+
+\begin{definition}
+  Сопряженным к $z = x + i\cdot y \in \mathbb{C}$ называется комплексное число $\overline{z} := x - i \cdot y$.
+\end{definition}
+
+\begin{remark}
+  $z \cdot \overline{z} = |z|^2$.
+\end{remark}
+
+\begin{statement}
+  Сформулируем несколько полезных утверждений:
+  \begin{enumerate}
+    \item $z \in \mathbb{R} \Longleftrightarrow z = \overline{z}$
+    \item $z \in i \cdot \mathbb{R} \Longleftrightarrow z + \overline{z} = 0$
+    \item $\overline{z_1 \cdot z_2} = \overline{z_1} \cdot \overline{z_2}$
+    \item $\overline{z^k} = {\overline{z}}^k$
+    \item $\overline{z_1 + z_2} = \overline{z_1} + \overline{z_2}$
+  \end{enumerate}
+\end{statement}
+
+\begin{theorem}[Основная теорема алгебры]
+  Пусть $P_n(x)$ --- многочлен степени $n \geq 1$ с комплексными коэффициентами. Тогда у него имеется ровно $n$ корней (с учётом их кратности). 
+\end{theorem}
+
+\begin{remark}
+  Иначе говоря, теорему 1.1 можно переформулировать следующим образом: любой многочлен над полем комплексных чисел можно разложить в произведение линейных двучленов.
+\end{remark}
+
+\begin{example}
+  Пусть $P_n(z) = z^2 + 1 = (z + i)(z - i)$. В поле вещественных чисел наш многочлен уже будет являться неприводимым (не будет раскладываться на многочлены меньшей степени). 
+\end{example}
+
+\begin{statement}
+  Пусть $P_n(z)$ --- многочлен с вещественными коэффициентами и $z = z_0$ --- его корень. Тогда $\overline{z_0}$ --- тоже корень.
+\end{statement}
+
+\begin{proof}
+  Пусть $P_n(z) = a_0z^n + a_1z^{n - 1} + \ldots + a_{n - 1}z + a_n$. Зная, что $\overline{0} = 0$, получаем 
+  \[0 = \overline{P_n(z_0)} = \overline{a_0z^n + a_1z^{n - 1} + \ldots + a_{n - 1}z + a_n} = [\text{утверждение 1.1}] = \]
+  \[= a_0\overline{z_0}^k + \ldots + a_{n - 1}\overline{z_0} + a_n = P_n(\overline{z_0}) \implies \text{$\overline{z_0}$ --- корень $P_n$}\]
+\end{proof}
+
+\begin{definition}
+  Положим $e^{i\varphi} = \cos\varphi + i\sin\varphi, \ \varphi \in \mathbb{R}$
+\end{definition}
+
+\begin{remark}
+  Сформулируем пару полезных свойств:
+  \begin{enumerate}
+    \item $e^{2\pi\varphi} = 1$
+    \item $|e^{i\varphi}| = 1 \quad \forall \varphi \in \mathbb{R}$
+    \item $\overline{e^{i\varphi}} = e^{-i\varphi} \quad \forall \varphi \in \mathbb{R}$
+    \item $e^{i\varphi} \cdot e^{i\psi} = e^{i(\varphi + \psi)} \quad \forall \varphi, \psi \in \mathbb{R}$
+    \item $(e^{i\varphi})^n = e^{in\varphi} \Longleftrightarrow (\cos\varphi + i\sin\varphi)^n = \cos n\varphi + i\sin n\varphi$ --- формула Муавра, $n \in \mathbb{Z}$ 
+  \end{enumerate}
+\end{remark}
+
+\begin{definition}
+  Пусть $\lambda = a + ib$. Тогда $e^\lambda = e^ae^{ib} = e^a(\cos b + i\sin b)$
+\end{definition}
+
+\begin{statement}
+  Пусть $\lambda_1, \ldots, \lambda_n \in \mathbb{C}, \quad \lambda_i \neq \lambda_j \ \forall i \neq j$. Тогда 
+  \[e^{\lambda_1x}, \ldots, e^{\lambda_nx} \text{ --- линейно независимые над } \mathbb{C}\]
+  То есть $c_1e^{\lambda_1x} + \ldots + c_ne^{\lambda_nx} = 0 \quad \forall x \in \mathbb{R} \implies c_1 = \ldots = c_n = 0$
+\end{statement}
+
+\section{Линейные однородные ДУ с постоянными коэффициентами}
+
+В этом и следующем блоках нас будут интересовать ДУ следующего вида:
+\[y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_{n - 1} y' + a_n y = 0\]
+Здесь $a_1, a_2, \ldots, a_n \in \mathbb{C}$, $y \colon I \to \mathbb{C}$, где $I \subset \mathbb{R}$ --- интервал. \\
+С предыдущей лекции мы уже знаем, что пространство решений нашего уравнения является линейным, а его [уравнения] характеристическим многочленом называется 
+\[\chi(\lambda) = \lambda^n + a_1 \lambda^{n - 1} + \ldots + a_{n - 1} \lambda + a_n\]
+Причём характеристическим уравнением тогда является $\chi(\lambda) = 0$.
+
+\begin{theorem}
+  Пусть $\lambda_1, \ldots, \lambda_n$ --- корни характеристического уравнения. Причём $\lambda_i \neq \lambda_j \ \forall i \neq j$. 
+  Тогда произвольное решение ДУ имеет вид 
+  \[y(x) = \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}, \quad c_1, \ldots, c_n \in \mathbb{C}\]
+\end{theorem}
+
+\begin{remark}
+  На самом деле в теореме 2.1 имеется ввиду, что 
+  \begin{enumerate}
+    \item $\forall c_1, \ldots, c_n \in \mathbb{C} \quad \displaystyle \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}$ --- решение ДУ
+    \item Любое решение ДУ может быть представлено как \ $\displaystyle \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}$
+  \end{enumerate}
+\end{remark}
+
+\begin{proof}
+  (1) В силу линейности пространства решений ДУ достаточно доказать только, что 
+  \[e^{\lambda x} \text{ --- решение, где } \lambda \in \{\lambda_1, \ldots, \lambda_n\}\]
+  Приступим же. Посчитаем $k$-ю производную от $e^{\lambda x}$ ($k \in \mathbb{Z}_+$): 
+  \[\frac{d^k}{(d x)^k} \ e^{\lambda x} = \lambda^k e^{\lambda x}\]
+  Подставим в ДУ вместо $y^{(k)}$ полученные нами $\lambda^k e^{\lambda x}$:
+  \[y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_{n - 1} y' + a_n y = \]
+  \[= \lambda^n e^{\lambda x} + a_1\lambda^{n - 1} e^{\lambda x} + \ldots + a_{n - 1}\lambda e^{\lambda x} + a_n e^{\lambda x} =\]
+  \[= e^{\lambda x} \cdot (\lambda^n + a_1\lambda^{n - 1} + \ldots + a_{n - 1}\lambda + a_n) = e^{\lambda x} \cdot \chi(\lambda) = 0\]
+  Равенство выполнилось $\implies e^{\lambda x}$ --- решение ДУ $\implies \forall c_1, \ldots, c_n \in \mathbb{C} \quad \displaystyle \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}$ --- решение ДУ \\
+  (2) Теперь докажем, что любое решение ДУ имеет вид \ $\displaystyle \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}$ для некоторого набора \\
+  $c_1, \ldots, c_n \in \mathbb{C}$. Пусть $\widehat{y}$ и $y(x) = \displaystyle \sum_{k = 1}^{n} c_k \cdot e^{\lambda_kx}$ --- решения одного и того же ДУ, а также \\
+  $\widehat{y}^{(j)}(0) = y^{(j)}(0) \quad \forall j \in \{0, \ldots, n - 1\} \ \ \Longleftrightarrow \ \ \widehat{y}^{(j)}(0) = \displaystyle \sum_{k = 1}^{n} c_k \cdot \lambda_k^j \quad \forall j \in \{0, \ldots, n - 1\}$ \\
+  Перепишем наше равенство в следующем виде
+  \[
+  \begin{pmatrix}
+    1 & 1 & \ldots & 1 \\
+    \lambda_1 & \lambda_2 & \ldots & \lambda_n \\
+    \lambda_1^2 & \lambda_2^2 & \ldots & \lambda_n^2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \lambda_1^{n - 1} & \lambda_2^{n - 1} & \ldots & \lambda_n^{n - 1}
+  \end{pmatrix}
+  \cdot
+  \begin{pmatrix}
+    c_1 \\
+    c_2 \\
+    c_3 \\
+    \vdots \\
+    c_n
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \widehat{y}(0) \\
+    \widehat{y}'(0) \\
+    \widehat{y}^{(2)}(0) \\
+    \vdots \\
+    \widehat{y}^{(n - 1)}(0)
+  \end{pmatrix}
+  \]
+  Слева у нас матрица Вандермонда, определитель которой равен $\displaystyle \prod_{1 \leq j < i < n} (\lambda_i - \lambda_j) \ \neq 0$. \\
+  Следовательно, $\exists c_1, \ldots, c_n \in \mathbb{C}: \ \widehat{y}^{(j)}(0) = y^{(j)}(0) \quad \forall j \in \{0, \ldots, n - 1\}$ \\\
+  По теореме о $\exists !$ решения ЗК \ $\widehat{y}(x) = y(x) \quad \forall x \in I \subset \mathbb{R}$ --- интервалу ($0 \in I$). \\
+  По теореме о продолжении решений \ $\widehat{y}(x) = y(x) \quad \forall x \in \mathbb{R}$
+\end{proof}
+
+\section{Овеществление решений}
+
+\begin{lemma}
+  Пусть $\lambda_1, \ldots, \lambda_{2s} \in \mathbb{C}$, а $\lambda_{2s + 1}, \ldots, \lambda_n \in \mathbb{R}$. Причём $\overline{\lambda_1} = \lambda_2, \ldots, \overline{\lambda_{2s - 1}} = \lambda_{2s}$. \\
+  Тогда \ $\displaystyle \sum_{k = 1}^n c_k e^{\lambda_k x}$ --- вещественнозначная \ $\Longleftrightarrow \ \overline{c_1} = c_2, \ldots, \overline{c_{2s - 1}} = c_{2s}$, а $c_{2s + 1}, \ldots, c_n \in \mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+  $(\Longleftarrow)$ Пусть $\overline{c_1} = c_2, \ldots, \overline{c_{2s - 1}} = c_{2s}$, а $c_{2s + 1}, \ldots, c_n \in \mathbb{R}$. В силу разбиения наших коэффициентов на пары можем доказывать вещественноначность только для $c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x}$, 
+  так как остальные пары вплоть до $c_{2s - 1}$ и $c_{2s}$ будут аналогично вещественнозначны, а все $c_k e^{\lambda_k x}$ при $k > 2s$ вещественнозначны по определению. Сначала выведем пару простеньких преобразований: \\
+  Пусть $x \in \mathbb{R}, \ \lambda = \alpha + i \cdot \beta$. Тогда 
+  \begin{enumerate}
+    \item $e^{\overline{\lambda} x} = e^{(\overline{\alpha + i \cdot \beta}) x} = e^{(\alpha - i \cdot \beta) x} = e^{x \alpha - i x \beta} = e^{\overline{\lambda x}}$
+    \item $e^{\overline{\lambda}} = e^{\overline{\alpha + i \cdot \beta}} = e^{\alpha - i \cdot \beta} = e^{\alpha} \cdot e^{- i \cdot \beta} = e^{\alpha} \cdot \overline{e^{i \cdot \beta}} = \overline{e^{\lambda}}$
+  \end{enumerate}
+  Теперь мы готовы к доказательству. 
+  \[c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x} = c_1 e^{\lambda_1 x} + \overline{c_1} e^{\overline{\lambda_1} x} = [\text{пункты 1 и 2 выше}] =\]
+  \[= c_1 e^{\lambda_1 x} + \overline{c_1 e^{\lambda_1 x}} = 2 \Rere (c_1 e^{\lambda_1 x}) \in \mathbb{R}\]
+  $(\Longrightarrow)$ Пусть $y(x) = \displaystyle \sum_{k = 1}^n c_k e^{\lambda_k x}$. Используя утверждение 1.1, констатируем
+  \[y(x) \in \mathbb{R} \ \Longleftrightarrow \ y(x) = \overline{y(x)}\]
+  Рассмотрим подробнее $\overline{y(x)}$:
+  \[\overline{c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x} + \ldots + c_{2s - 1} e^{\lambda_{2s - 1} x} + c_{2s} e^{\lambda_{2s} x} + c_{2s + 1} e^{\lambda_{2s + 1} x} + \ldots + c_n e^{\lambda_n x}} = \]
+  \[= \overline{c_1 e^{\lambda_1 x}} + \overline{c_2 e^{\lambda_2 x}} + \ldots + \overline{c_{2s - 1} e^{\lambda_{2s - 1} x}} + \overline{c_{2s} e^{\lambda_{2s} x}} + \overline{c_{2s + 1} e^{\lambda_{2s + 1} x}} + \ldots + \overline{c_n e^{\lambda_n x}} =\]
+  \[= \overline{c_1} e^{\lambda_2 x} + \overline{c_2} e^{\lambda_1 x} + \ldots + \overline{c_{2s - 1}} e^{\lambda_{2s} x} + \overline{c_{2s}} e^{\lambda_{2s - 1} x} + \overline{c_{2s + 1}} e^{\lambda_{2s + 1} x} + \ldots + \overline{c_n} e^{\lambda_n x} =\]
+  Теперь вычтем из $y(x)$ его сопряжение:
+  \[(c_1 - \overline{c_2}) e^{\lambda_1 x} + (c_2 - \overline{c_1}) e^{\lambda_2 x} + \ldots + (c_{2s - 1} - \overline{c_{2s}}) e^{\lambda_{2s - 1} x} + (c_{2s} - \overline{c_{2s - 1}}) e^{\lambda_{2s} x} +\]
+  \[+ (c_{2s + 1} - \overline{c_{2s + 1}}) e^{\lambda_{2s + 1} x} + \ldots + (c_n - \overline{c_n}) e^{\lambda_n x}\]
+  По утверждению 1.3 заключаем желанное:
+  \[\overline{c_1} = c_2, \ \ldots, \ \overline{c_{2s - 1}} = c_{2s} \text{, а }  \ c_{2s + 1}, \ldots, c_n \in \mathbb{R}\]
+\end{proof}
+
+\begin{remark}
+  Перед формулировкой следующей теоремы сделаем пару выкладок. \\
+  Пусть $c = a + i \cdot b$, $\lambda = \alpha + i \cdot \beta$. Тогда
+  \[c e^{\lambda x} = (a + i \cdot b) \cdot e^{\alpha x} \cdot (\cos \beta x + i \sin \beta x)\]
+  \[c e^{\lambda x} + \overline{c} e^{\overline{\lambda} x} = 2 \Rere (c e^{\lambda x}) = 2e^{\alpha x} \cdot (a\cos \beta x - b\sin \beta x)\]\
+  Переобозначив $\widetilde{a} = 2a, \widetilde{b} = -2b$, получим
+  \[c e^{\lambda x} + \overline{c} e^{\overline{\lambda} x} = e^{\alpha x} \cdot (\widetilde{a}\cos \beta x + \widetilde{b}\sin \beta x)\]
+\end{remark}
+
+\begin{theorem}
+  Пусть $a_1, \ldots, a_n \in \mathbb{R}$, а $\lambda_1, \ldots, \lambda_n$ --- корни характеристического уравнения, причём $\lambda_i \neq \lambda_j \ \forall i \neq j$.
+  Если $\lambda_{2k - 1} = \alpha_k + i \cdot \beta_k, \ \lambda_{2k} = \overline{\lambda_{2k - 1}} \quad \forall k \in \{1, \ldots, s\}$, а $\lambda_{2s + 1}, \ldots, \lambda_{n} \in \mathbb{R}$, то 
+  общее $\underline{\text{вещественное}}$ решение ДУ имеет вид
+  \[y(x) = \sum_{k = 1}^{s} e^{\alpha_k x} \cdot (a_k \cos \beta_k x + b_k \sin \beta_k x) + \sum_{k = 2s + 1}^n c_k e^{\lambda_k x},\]
+  где $a_k, b_k, c_k \in \mathbb{R}$
+\end{theorem}
+
+\newpage
+\section{Начало семестра би лайк}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pictures/Иван и Серый.jpg}
+\end{figure}
+
+\section{Конец семестра би лайк}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pictures/Василиса.jpg}
+\end{figure} \leavevmode
+\\
+--- Чего это она плачет? \\
+--- Может, от радости? \\
+--- Что-то слишком сильно она радуется...
+
+\end{document}
