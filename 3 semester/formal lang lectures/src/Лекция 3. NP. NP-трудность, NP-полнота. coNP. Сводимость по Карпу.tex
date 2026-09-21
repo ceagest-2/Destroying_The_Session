@@ -1,0 +1,289 @@
+\documentclass[11pt]{article}
+\usepackage{forest}
+\usepackage[table]{xcolor}
+\input{packages.tex}
+
+\DeclareMathOperator{\DTIME}{DTIME}
+\DeclareMathOperator{\NTIME}{NTIME}
+\DeclareMathOperator{\PATH}{PATH}
+\DeclareMathOperator{\Poly}{P}
+\DeclareMathOperator{\NotDet}{N}
+\DeclareMathOperator{\NP}{NP}
+\DeclareMathOperator{\poly}{poly}
+
+\newcommand{\lectureNumber}{3}
+\newcommand{\lectureTitle}{Эквивалентность определений NP. NP-трудность, NP-полнота. coNP. Сводимость по Карпу}
+\newcommand{\courseName}{Формальные языки и сложность вычислений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Ох... мои... смурфики...}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Зухба А.В. <3 \par}
+    {\large Автор: \href{t.me/sol_m_07}{Соля} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Пример НМТ}
+
+Пусть $M$ принимает $x$, если существует слово в бинарном алфавите длины $|x|$, которое даёт остаток 3 при делении на 4, если рассматривать его как число в двоичной записи.
+Рассмотрим таблицу переходов, отмечая красным цветом состояния обработки ошибок.
+\\
+\\
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & $q_1$ & $q_2$ & $q_3$ \\
+\hline
+$a, b, c$ & $(0, +1, q_1)$, $(1, +1, q_1)$ & \cellcolor{red!20} $(0, 0, q_r)$ & \cellcolor{red!20} $(0, 0, q_r)$ \\
+\hline
+0 & \cellcolor{red!20} $(0, 0, q_r)$ & $(0, 0, q_r)$ & $(0, 0, q_r)$\\
+\hline
+1 & \cellcolor{red!20} $(1, 0, q_r)$ & $(1, -1, q_3)$ & $(1, 0, q_a)$\\
+\hline
+$\Lambda$ & $(\Lambda, -1, q_2)$ & \cellcolor{red!20} $(\Lambda, 0, q_r)$ & $(\Lambda, 0, q_r)$\\
+\hline
+\end{tabular} \leavevmode
+\\ \\ \\ 
+Изобразим работу МТ на входе $x = aba$, пользуясь конфигурациями:
+\\ \\
+\begin{forest}
+  for tree={
+    draw, rounded corners,
+    fill=blue!10,
+    minimum height=6mm,
+    l sep=8mm, s sep=10mm,
+  }
+  [$q_1aba$
+    [$0q_1ba$
+      [$00q_1a$
+        [$000q_1$
+          [$00q_20$
+            [$00q_r0$]
+          ]
+        ]
+        [$001q_1$
+          [$00q_21$
+            [$0q_301$
+              [$0q_r01$]
+            ]
+          ]
+        ]
+      ]
+      [$01q_1a$
+        [$010q_1$
+          [$01q_20$
+            [$01q_r0$]
+          ]
+        ]
+        [$011q_1$
+          [$01q_21$
+            [$0q_311$
+              [$0q_a11$]
+            ]
+          ]
+        ]
+      ]
+    ]
+    [$1q_1ba$
+      [$10q_1a$
+        [$100q_1$
+          [$10q_20$
+            [$10q_r0$]
+          ]
+        ]
+        [$101q_1$
+          [$10q_21$
+            [$10q_301$
+              [$10q_r01$]
+            ]
+          ]
+        ]
+      ]
+      [$11q_1a$
+        [$110q_1$
+          [$11q_20$
+            [$11q_r0$]
+          ]
+        ]
+        [$111q_1$
+          [$11q_21$
+            [$11q_311$
+              [$11q_a11$]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+\end{forest} \leavevmode
+\\ \\
+Каждая ветка дерева по длине будет $\leq |x| + 3$. Вершин в дереве будет $\leq 2^0 + 2^1 + \ldots + 2^{|x|} + 3 \cdot 2^{|x|} = 5 \cdot 2^{|x|} - 1$. 
+О чём это нам говорит? Если писать эмуляцию нашей НМТ (которая работает $\leq |x| + 3$) напрямую (рассматривая все возможные достижимые конфигурации), то время работы будет ограничено как $\leq 5 \cdot 2^{|x|} - 1$. \\
+В общем случае посмотрим на нашу таблицу переходов $\delta$. В ней всегда есть какая-то ячейка с наибольшим числом ветвлений. Это число обозначим за $m$ (в нашем примере $m = 2$). Важно заметить, что это характеристика МТ (не зависит от входа), а значит, для нас это будет константа. 
+Тогда на самом деле МТ переберёт последовательно все пути в дереве за $O\left(m^{T(n)}\right)$.
+
+\section{Эквивалентность определений NP}
+
+\begin{definition}
+    Классом $\NTIME(T(n))$ называется множество языков, распознаваемых на недетерминированной машине Тьюринга за время $O(T(n))$.
+    \[\NP = \bigcup_{c = 1}^{\infty} \NTIME(n^c)\]
+    В названии класса $\NotDet$ обозначает "недетерминированные вычисления" \ , а $\Poly$ --- "полиномиальное время".
+\end{definition}
+
+\begin{definition}
+    Классом $\NP_{\#}$ называется множество языков $\mathcal{L}$, для которых существует функция $V(x, s)$ с булевыми значениями, вычислимая за полиномиальное время от длины \textbf{первого аргумента} такая, что:
+    \begin{itemize}
+        \item Если $x \in \mathcal{L}$, то $\exists s \; V(x, s) = 1$
+        \item Если $x \not \in \mathcal{L}$, то $\forall s \; V(x, s) = 0$
+    \end{itemize}
+    Второй вход $s$ часто называют \textbf{сертификатом}, а функцию $V$ --- \textbf{верификатором}. Таким образом, сертификат удостоверят, что $x \in \mathcal{L}$, а верификатор проверяет верность сертификата.
+\end{definition}
+
+\begin{remark}
+  На самом деле мы сформулировали выше два определения $\NP$. Давайте докажем их эквивалентность.
+\end{remark}
+
+\begin{proof}
+  $(\NP \subseteq \NP_{\#})$ Пусть $L \in \NP \implies$ существует полином $p(|x|)$ и НМТ, работающая $p(|x|)$ и принимающая $L$. \\
+  Построим ДМТ (на основе НМТ), принимающую в качестве $s$ некоторую последовательность из 0 и 1 и ``интерпретирующую'' её как слово в алфавите $\{1, 2, \ldots, d\}$, где $d$ --- максимальное количество вариантов в $\delta$. 
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Сертификат для определения NP.png}
+  \end{figure}
+  \\
+  Каждый раз при эмуляции соответствующего шага НМТ будет выбирать вариант перехода, соответствующий последнему считанному числу (т.е. букве в алфавите $\{1, 2, \ldots, d\}$). В случае отсутствия такого варианта достаточно обновить сертификат и пойти заново.
+  Если при эмуляции получили $q_a$, то $V(x, s) = 1$, а иначе $V(x, s) = 0$. Тогда мы получили ДМТ, принимающую язык пар $(x, s)$, где $x \in L$, а $s$ --- подходящий сертификат. Это и говорит нам о том, что $L \in \NP_{\#} \implies \NP \subseteq \NP_{\#}$. \\ \\
+  $(\NP_{\#} \subseteq \NP)$ Пусть $L \in \NP_{\#} \implies$ существуют ДМТ и $V(x, s)$. \\
+  Построим НМТ:
+  \begin{enumerate}
+    \item Недетерминированно генерируем на отдельной ленте слово в алфавите $\{0, 1\}$ (считаем, что $s \in \{0, 1\}^{*}$) длины не более $q(|x|)$. Тратим $O(q(|x|)) + O(\poly (q(|x|)))$.
+    \item Эмулируем работу $V$, используя сгенерированное слово в качестве $s$. Тратим $O(\poly (q(|x|)))$.
+  \end{enumerate}
+  $\implies L \in \NP \implies \NP_{\#} \subseteq \NP \implies \NP = \NP_{\#}$
+\end{proof}
+
+\begin{example}
+  Рассмотрим язык $L = \{G \ | \ \text{существует правильная 3-раскраска } G\}$ из $\NP$. 
+  Тогда сертификатом как раз будет являться 3-раскраска графа, а верификатор будет проверять её корректность.
+\end{example}
+
+\section{Сводимости по Карпу и Куку}
+
+\begin{definition}
+  Пусть $A$ и $B$ --- два языка. Тогда $A$ \textbf{сводится по Карпу} к $B$, если существует всюду определённая функция $f \colon \{0, 1\}^{*} \to \{0, 1\}^{*}$, вычислимая 
+  за полиномиальное время, такая что: 
+  \[x \in A \Longleftrightarrow f(x) \in B\]
+  Обозначение: $A \leq_{p} B$ (индекс $p$ означает полиномиальность).
+\end{definition}
+
+\begin{lemma}
+  \textbf{Свойства сводимости по Карпу}
+  \begin{enumerate}
+    \item $A \leq_{p} A$ (рефлексивность)
+    \item $A \leq_{p} B$ и $B \leq_{p} C \implies A \leq_{p} C$ (транзитивность)
+    \item $A \in \Poly$, а $B \neq \varnothing, \ B \neq \{0, 1\}^{*} \implies A \leq_{p} B$
+    \item $A \leq_{p} B$ и $B \in \Poly \implies A \in \Poly$
+    \item $A \leq_{p} B$ и $B \in \NP \implies A \in \NP$
+  \end{enumerate}
+\end{lemma}
+
+\begin{remark}
+  Если сводимость по Карпу вам что-то напоминает, то вы правы. Она очень похожа на $m$-сводимость. Иногда её называют полиномиальной $m$-сводимостью.
+\end{remark}
+
+\begin{definition}
+  Сведение задачи $R_1$ к $R_2$ \textbf{по Куку} --- это полиномиальный по времени алгоритм (другими словами, МТ с полиномиальным временем работы), решающий задачу $R_1$ при условии, что 
+  функция, находящая решение задачи $R_2$, ему дана в качестве оракула, то есть обращение к ней занимает всего один шаг. \\
+  Обозначение: $R_1 \leq_{С} R_2$. 
+\end{definition}
+
+\begin{remark}
+  Определение приведено для ознакомления. В нашем курсе мы будем использовать именно сводимость по Карпу.
+\end{remark}
+
+\section{coNP}
+
+\begin{definition}
+  Для класса $C$ класс $coC$ определяется так: $L \in coC \iff \overline{L} \in C$.
+\end{definition}
+
+\begin{definition}
+  Класс $co\NP$ --- это множество языков, дополнения которых лежат в классе $\NP$.
+\end{definition}
+
+\begin{definition}[Сертификатное определение $co\NP$]
+  Классом $co\NP$ называется множество языков $L$, для которых существует функция $V(x, s)$ с булевыми значениями, 
+  вычислимая за полиномиальное время от длины \textbf{первого аргумента} такая, что:
+  \begin{itemize}
+    \item Если $x \in L$, то $\forall s \; V(x, s) = 1$
+    \item Если $x \not \in L$, то $\exists s \; V(x, s) = 0$
+  \end{itemize}
+\end{definition}
+
+\begin{lemma}
+  \[\Poly \ \subseteq \ \NP \cap \ co\NP\]
+\end{lemma}
+
+\begin{hypothesis}
+  \[\NP \neq co\NP\]
+\end{hypothesis}
+
+\section{NP-трудность и NP-полнота}
+
+\begin{definition}
+  Язык $B$ называется \textbf{NP-трудным}, если для любого $A \in \NP$ выполнено $A \leq_{p} B$.
+\end{definition}
+
+\begin{definition}
+  Язык $B$ называется \textbf{NP-полным}, если он является NP-трудным и принадлежит классу $\NP$.
+\end{definition}
+
+\begin{lemma}
+  Если $B$ является NP-трудным и $B \in \Poly$, то $\Poly = \NP$.
+\end{lemma}
+
+\begin{lemma}
+  Если $A$ является NP-трудным и $A \leq_{p} B$, то $B$ также является NP-трудным.
+\end{lemma}
+
+\section{Автор хоронит надежды понять формалки}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{Смурфики.jpg}
+\end{figure}
+
+\end{document}
