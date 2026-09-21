@@ -1,0 +1,200 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{3}
+\newcommand{\lectureTitle}{Независимые события. Независимые испытания}
+\newcommand{\courseName}{Теория вероятностей}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Секрет быть скучным состоит в умении рассказать о себе всё}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Широков Максим Евгеньевич \par}
+    {\large Автор: \href{https://t.me/ceagest}{Хаотичный бездельник} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Независимые события}
+
+\begin{remark}
+    Вспомним, что \textbf{событием} называется любое подмножество множества элементарных исходов $(A \subseteq \Omega)$.
+\end{remark}
+
+\begin{definition}
+    События $A$ и $B$ называются \textbf{независимыми}, если выполнено одно из условий:
+    \begin{enumerate}
+        \item \fbox{$P(AB) = P(A) \cdot P(B)$}
+        \item $P(A | B) = P(A), \; P(B) > 0$
+        \item $P(B | A) = P(B), \; P(A) > 0$
+    \end{enumerate}
+\end{definition}
+
+\begin{remark}
+    Если мы не будем рассматривать невозможные события, то все эти условия эквивалентны. Это легко следует из формулы условной вероятности:
+    \[P(A | B) = \frac{P(AB)}{P(B)}, \; P(B) > 0\]
+\end{remark}
+
+\begin{example}
+    Найдём событие, которое независимо с самим собой. Пусть $A \subseteq \Omega$ --- такое чудесное событие. Тогда
+    \[P(A \cdot A) = P(A) \cdot P(A) \iff P(A) = P(A)^2 \iff A = \varnothing \; \; \text{или} \; \; A = \Omega\]
+\end{example}
+
+\begin{example} \label{ex:1.2}
+    Пусть есть колода из $36$ карт: $4$ масти по $9$ карт. Мы наудачу вытягиваем из неё одну карту. Рассмотрим два события:
+    \[A =\left\{\text{вытащили пики}\right\}, \; \; B = \left\{\text{вытащили даму}\right\}\]
+    Увидим, что они независимы. Действительно, в силу однородности ВП по классическому определению вероятности:
+    \[P(A) = \frac{4}{36} = \frac{1}{9}, \; \; P(B) = \frac{9}{36} = \frac{1}{4}, \; \; P(AB) = \frac{1}{36} \implies\]
+    \[\implies P(AB) = \frac{1}{36} = \frac{1}{9} \cdot \frac{1}{4} = P(A) \cdot P(B)\]
+    Давайте теперь добавим в колоду пустую карту. Покажем, что события $A$ и $B$ станут зависимыми. В самом деле, по нашей любимой формуле классической вероятности:
+    \[P(A) = \frac{4}{37}, \; \; P(B) = \frac{9}{37}, \; \; P(AB) = \frac{1}{37} \implies\]
+    \[\implies P(AB) = \frac{1}{37} \neq \frac{4}{37} \cdot \frac{9}{37} = P(A) \cdot P(B)\]
+    Заметим ещё вот что:
+    \[P(A | B) = \frac{P(AB)}{P(B)} = \frac{\frac{1}{37}}{\frac{9}{37}} = \frac{1}{9} \implies P(A) = \frac{4}{37} < \frac{1}{9} = P(A | B)\]
+    Выходит, что теперь информация о произошедшем событии $B$ увеличивает вероятность достать даму. Так происходит потому, что сейчас событие $B$ несёт в себе ещё и информацию о том, что выпала не пустая карта.
+\end{example}
+
+\begin{example}
+    Нас понесло куда то совсем не туда, поэтому мы наудачу бросаем точку в единичный квадрат. Вообще говоря, этот кейс выходит за рамки нашей дискретной модели, так как множество элементарных исходов не счётно, но мы всё равно его рассматриваем, полагая очевидным, что площадь является мерой вероятности $(P(A) = S(A))$.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{играемся с единичным квадратом.jpg}
+    \end{figure} \leavevmode
+    \\
+    Наша цель состоит в визуализации независимых событий. В терминах площадей независимые события $A$ и $B$ определяют соотношение:
+    \[S(A \cap B) = S(A) \cdot S(B)\]
+    Получается, что нам нужно выудить фигуры, площадь пересечения которых равна произведению их площадей. Таковыми, например, являются \textbf{горизонтальный и вертикальный цилиндры}.
+    \begin{definition}
+        \textbf{Вертикальным цилиндром} с основанием $A$ назовем следующее множество:
+        \[C_A^V = \{(x, y) \in [0, 1]^{\times 2} \; | \; x \in A, \; y \text{ --- любое}\}\]
+        Горизонтальный цилиндр с основанием $B$ определяется аналогично.
+    \end{definition}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{цилиндры всякие.jpg}
+    \end{figure} \leavevmode
+    \\
+    Геометрически можно мыслить независимые события такими, которые в подходящей системе координат записаны как вертикальный и горизонтальный цилиндры. \\
+    Давайте вспомним пример \ref{ex:1.2} c вытягиванием карты и отобразим независимые события $A$ и $B$ как цилиндры в некоторой системе координат:
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{пики и дамы на плоскости.jpg}
+    \end{figure}
+\end{example}
+
+\section{Независимость в совокупности}
+
+\begin{definition}
+    События $A_1, \ldots, A_n$ называются \textbf{попрано независимыми}, если
+    \[P(A_i A_j) = P(A_i) \cdot P(A_j) \quad \forall i \neq j\]
+\end{definition}
+
+\begin{definition}
+    События $A_1, \ldots, A_n$ называются \textbf{независимыми в совокупности}, если
+    \[\forall m \in \{2, 3, \ldots, n\} \; \; \forall (i_1, i_2, \ldots, i_m) \hookrightarrow  P(A_{i_1} A_{i_2} \ldots A_{i_m}) = P(A_{i_1}) \cdot P(A_{i_2}) \cdot \ldots \cdot P(A_{i_m})\]
+\end{definition}
+
+\begin{remark}
+    Мы, конечно, понимаем, что из независимости в совокупности следует попарная независимость. Обратное, вообще говоря, неверно. Продемонстрируем это на классическом примере, который в народе зовётся тетраэдром Бернштейна.
+\end{remark}
+
+\begin{example}[Тетраэдр Бернштейна] \label{ex:2.1}
+    Давайте увидим, что независимость в совокупности --- это более сильное условие, чем попарная независимость. Для этого рассмотрим эксперимент, в ходе которого мы бросаем правильный симметричный тетраэдр (ВП однородно, вероятность выпадения каждой грани $\frac{1}{4}$), грани которого раскрашены в три цвета так, как показано на рисунке:
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{разноцветный тетраэдр.jpg}
+    \end{figure} \leavevmode
+    \\
+    Введём следующие события:
+    \[A = \{\text{на выпавшей грани есть красный цвет}\}\]
+    \[B = \{\text{на выпавшей грани есть зелёный цвет}\}\]
+    \[C = \{\text{на выпавшей грани есть синий цвет}\}\]
+    Покажем, что эти события попарно независимы. Действительно:
+    \[P(A) = P(B) = P(C) = \frac{1}{2}, \; \; P(AB) = P(AC) = P(BC) = \frac{1}{4}\]
+    \[P(AB) = \frac{1}{4} = \frac{1}{2} \cdot \frac{1}{2} = P(A) \cdot P(B),\]
+    \[P(AC) = \frac{1}{4} = \frac{1}{2} \cdot \frac{1}{2} = P(A) \cdot P(C),\]
+    \[P(BC) = \frac{1}{4} = \frac{1}{2} \cdot \frac{1}{2} = P(B) \cdot P(C)\]
+    Но эти события не являются независимыми в совокупности. В самом деле:
+    \[P(ABC) = \frac{1}{4} \neq \frac{1}{2} \cdot \frac{1}{2} \cdot \frac{1}{2} = P(A) \cdot P(B) \cdot P(C)\]
+    Сделав очевидное наблюдение $P(A | BC) = 1$, мы понимаем, что попарная независимость не исключает такого рода жёсткой связи между событиями (если одновременно на выпавшей грани есть синий и зелёный цвета, то на ней непременно окажется и красный, ведь выпасть в таком случае могло только основание).
+\end{example}
+
+\begin{example}
+    Пусть события $A$ и $B$ независимы. Докажем, что события $A$ и $\overline{B}$ тоже независимы. \\
+    Для этого нам достаточно установить равенство $P(A \overline{B}) = P(A) \cdot P(\overline{B})$.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{задачка про независимые.jpg}
+    \end{figure}
+    \[P(A \overline{B}) = P(A) - P(AB) = [\text{независимость}] = P(A) - P(A) \cdot P(B) = P(A) \cdot (1 - P(B)) = P(A) \cdot P(\overline{B})\]
+\end{example}
+
+\begin{example}
+    Пусть $A$, $B$ и $C$ такие события, что $A$ и $B$ независимы и $A$ и $C$ независимы. Будут ли независимыми события $A$ и $B \cup C$? \\
+    На самом деле, не обязательно. Контрпримером выступит наш любимый тетраэдр Бернштейна из примера \ref{ex:2.1}. В его терминах имеем:
+    \[B \cup C = \{\text{не выпала красная грань}\}\]
+    Тогда
+    \[P(B \cup C) = \frac{3}{4} \implies P(A | B \cup C) = \frac{P(A(B \cup C))}{P(B \cup C)} = \frac{\frac{1}{4}}{\frac{3}{4}} = \frac{1}{3} < \frac{1}{2} = P(A)\]
+\end{example}
+
+\section{Независимые испытания}
+
+До сих пор мы считали, что у нас есть некоторое одно вероятностное пространство $\Omega$. Давайте не будем себя ограничивать в удовольствии, и введём $n$ вероятностных пространств $\Omega_1, \Omega_2, \ldots, \Omega_n$. У $i$-го ВП $j$-ый элементарный исход обозначается $\omega_j^i$, вероятность, ему сопоставленная, обозначается $p_j^i$. По сути, мы хотим строго описать эксперимент, состоящий из серии параллельных или последовательных экспериментов (одновременный или последовательный запуск $n$ рулеток). Понятно, что его элементарным исходом хочется принять наборчик
+\[\widehat{\omega}_{i_1 i_2 \ldots i_n} = (\omega_{i_1}^1, \omega_{i_2}^2, \ldots, \omega_{i_n}^n)\]
+Тогда само ВП, описывающее этот эксперимент, мы положим так:
+\[\widehat{\Omega} = \Omega_1 \times \Omega_2 \times \ldots \times \Omega_n\]
+Осталось понять, как следует определить вероятности. Думаю, внимательный читатель уже смекнул:
+\[\widehat{p}_{i_1 i_2 \ldots i_n} = p_{i_1}^1 \cdot p_{i_2}^2 \cdot \ldots \cdot p_{i_n}^n\]
+Убедимся, что с аксиомами всё в порядке. Из равенства выше очевидно, что $\widehat{p}_{i_1 i_2 \ldots i_n} > 0$. Проверим аксиому аддитивности (здесь $\left\lvert \Omega_i \right\rvert = N_i$):
+\[\sum_{i_1 \ldots i_n} \widehat{p}_{i_1 \ldots i_n} = \sum_{i_1 \ldots i_n} p_{i_1}^1 \cdot \ldots \cdot p_{i_n}^n = \underbrace{\left(\sum_{i_1 = 1}^{N_1} p_{i_1}^1\right)}_{1} \cdot \ldots \cdot \underbrace{\left(\sum_{i_n = 1}^{N_n} p_{i_n}^n\right)}_{1} = 1\]
+Теперь, когда всё налажено, очень хочется сказать, что события $A \subseteq \Omega_1$ и $B \subseteq \Omega_2$ независимы. Так говорить, конечно, нельзя, ведь о независимости мы имеем право говорить лишь в рамках событий из одного пространства. Но мы же не просто так здесь столько старались, давайте как бы вложим события $A$ и $B$ в $\widehat{\Omega}$, поставив им соответствие события $\widehat{A} \subseteq \widehat{\Omega}$ и $\widehat{B} \subseteq \widehat{\Omega}$ (некоторые цилиндрические множества):
+\[\widehat{A} = \{(\omega_{i_1}^1, \omega_{i_2}^2, \ldots, \omega_{i_n}^n) \; | \; \omega_{i_1}^1 \in A, \; \omega_{i_2}^2, \omega_{i_3}^3, \ldots, \omega_{i_n}^n \text{ --- любые}\}\]
+\[\widehat{B} = \{(\omega_{i_1}^1, \omega_{i_2}^2, \ldots, \omega_{i_n}^n) \; | \; \omega_{i_2}^2 \in B, \; \omega_{i_1}^1, \omega_{i_3}^3, \ldots, \omega_{i_n}^n \text{ --- любые}\}\]
+Тогда:
+\[P(\widehat{A}) = \sum_{\widehat{\omega}_{i_1 \ldots i_n} \in \widehat{A}} \widehat{p}_{i_1 \ldots i_n} = \underbrace{\left(\sum_{i_1 = 1}^{N_1} p_{i_1}^1\right)}_{P(A)} \cdot \underbrace{\left(\sum_{i_2 = 1}^{N_2} p_{i_2}^2\right)}_{1} \cdot \ldots \cdot \underbrace{\left(\sum_{i_n = 1}^{N_n} p_{i_n}^n\right)}_{1} = P(A)\]
+\[P(\widehat{B}) = \sum_{\widehat{\omega}_{i_1 \ldots i_n} \in \widehat{B}} \widehat{p}_{i_1 \ldots i_n} = \underbrace{\left(\sum_{i_1 = 1}^{N_1} p_{i_1}^1\right)}_{1} \cdot \underbrace{\left(\sum_{i_2 = 1}^{N_2} p_{i_2}^2\right)}_{P(B)} \cdot \ldots \cdot \underbrace{\left(\sum_{i_n = 1}^{N_n} p_{i_n}^n\right)}_{1} = P(B)\]
+При этом, по аналогии с выкладками выше, легко убедиться, что $P(\widehat{A} \widehat{B}) = P(\widehat{A}) \cdot P(\widehat{B})$.
+
+\begin{example}[Схема Бернулли]
+    Рассмотрим частный случай описанной выше модели (проведём, так сказать, краткий экскурс в лор теорвера). Пусть
+    \[\Omega_1 = \Omega_2 = \ldots = \Omega_n = \{\underset{\underset{q}{\uparrow}}{0}, \underset{\underset{p}{\uparrow}}{1}\}\]
+    Тогда
+    \[\widehat{\Omega} = \{\widehat{\omega} = (\omega_1, \ldots, \omega_n) \; | \; \omega_i \in \{0, 1\}\}\]
+    \[\widehat{p} = p^k q^{n - k}, \text{ где } k \text{ --- число единиц в } \widehat{\omega}\]
+    Главный вопрос в схеме Бернулли: "какова вероятность $k$ успехов?". Ответим же на него, пользуясь комбинаторикой и выкладками выше:
+    \[P(\text{число успехов} = k) = C_n^k p^k q^{n - k}\]
+\end{example}
+
+\end{document}
