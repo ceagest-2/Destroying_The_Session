@@ -1,0 +1,180 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{3}
+\newcommand{\lectureTitle}{Дифференциальные операторы, порождённые многочленами. Линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней.}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Рецепт хорошего отдыха №1: лечь на травку, раскинуть крылья и лежать, лежать, лежать.}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/lost_luna}{Профессиональный бездельник} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Воспоминания}
+
+\begin{definition}
+    Однородным дифференциальным уравнением $n$-ого порядка с постоянными коэффициентами будем называть уравнение вида:
+    \[a_0 \cdot y^{(n)} + a_1 \cdot y^{(n - 1)} + \dots + a_{n - 1} \cdot y' + a_n \cdot y = 0, 
+    \text{ где } a_0 \neq 0, \ a_1, a_2, \dots, a_n \in \mathbb{C} \tag{1} \label{eq:1}\]
+    тогда \[\chi(\lambda) = a_0 \cdot \lambda^n + a_1 \cdot \lambda^{n-1} + \dots + a_n \text{ --- характеристический многочлен} \tag{2} \label{eq:2}\]
+    \[\chi(\lambda) = 0 \text{ --- характеристическое уравнение}\]
+\end{definition}
+
+\section{Дифференциальные операторы, порождённые многочленами}
+\begin{definition}
+    Рассмотрим функцию $f \in C^\infty(\mathbb{R})$, тогда \[\mathcal{D} = \frac{d}{dx}: C^\infty(\mathbb{R}) \to C^\infty(\mathbb{R})
+    \text{ --- оператор дифференцирования}\]
+    \[ \mathcal{D}(f) := \frac{d}{dx} f, \quad \mathcal{D}^k := \underbrace{\mathcal{D} \circ \dots \circ \mathcal{D}}_{k} = \frac{d^k}{dx^k}, \ k \in \mathbb{N}\]
+\end{definition}
+
+\begin{definition}
+    Тождественным оператором $I$ будем называть такой оператор, что \[I(f) = f\] Следующие обозначения эквивалентны: $I = \mathcal{D}^0 = Id$.
+\end{definition}
+\noindent Рассмотрим многочлен 
+\[P(\lambda) = p_0 \cdot \lambda^n + p_1 \cdot \lambda^{n-1} + \dots + p_{n-1} \cdot \lambda + p_n, \quad p_0, p_1, \dots p_n \in \mathbb{C}\]
+и каждому такому многочлену сопоставим дифференциальный оператор, который будем обозначать 
+\[P(\mathcal{D}) = p_0 \cdot \mathcal{D}^n + p_1 \cdot \mathcal{D}^{n-1} + \dots + p_{n-1} \cdot \mathcal{D} + p_n \cdot I\]
+
+\begin{lemma}
+    Пусть $P, Q, R$ --- многочлены, такие что $P(\lambda) = Q(\lambda) \cdot R(\lambda)$. Тогда 
+    $P(\mathcal{D}) = Q(\mathcal{D}) \circ R(\mathcal{D})$.
+\end{lemma}
+
+\begin{proof}
+    Доказательство следует из справедливости следующих равенств:
+    \begin{enumerate}
+        \item $(a \cdot \mathcal{D}^k) \circ (b \cdot \mathcal{D}^m) = ab \cdot \mathcal{D}^{k + m}, \quad a, b \in \mathbb{C}, \ k, m \in \mathbb{N} \cup \{0\}$
+        \item $\mathcal{D}^k \circ (R_1 + R_2)(\mathcal{D}) = \mathcal{D}^k \circ R_1(\mathcal{D}) + \mathcal{D}^k \circ R_2(\mathcal{D})$
+        \item $(Q_1 + Q_2) (\mathcal{D}) \circ R(\mathcal{D}) = Q_1(\mathcal{D}) \circ R(\mathcal{D}) + Q_2(\mathcal{D}) \circ R(\mathcal{D})$
+    \end{enumerate}
+    Докажем свойство (1): возьмем $f \in C^\infty(\mathbb{R})$, тогда 
+    \[((a \cdot \mathcal{D}^k) \circ (b \cdot \mathcal{D}^m)) = a \cdot \mathcal{D}^k \left(b \cdot f^{(m)}(x)\right) = ab \cdot f^{(m + k)}(x) 
+    = \left(ab \cdot \mathcal{D}^{(m+k)}\right)(f(x))\] 
+    Свойства (2) и (3) доказываются аналогично, свойство (2) также можно доказать, разложив многочлены $R_1$ и $R_2$ в сумму
+    мономов и используя свойство (1).
+\end{proof}
+
+\begin{consequence}
+    Пусть $Q$ и $R$ --- произвольные многочлены, тогда \[Q(\mathcal{D}) \circ R(\mathcal{D}) = R(\mathcal{D}) \circ Q(\mathcal{D})\]
+\end{consequence}
+
+\begin{theorem}[формула сдвига]
+    Пусть $f \in C^\infty(\mathbb{R})$, $\lambda \in \mathbb{C}, \ P$ --- многочлен. Тогда \[P(\mathcal{D}) (e^{\lambda x} \cdot f(x))
+    = e^{\lambda x} \cdot P(\mathcal{D} + \lambda \cdot I) (f(x))\]
+\end{theorem}
+
+\begin{proof}
+    Заметим, что \[\mathcal{D}(e^{\lambda x} f(x)) = \lambda \cdot e^{\lambda x} f(x) + e^{\lambda x} f'(x) = 
+    e^{\lambda x} (\mathcal{D} + \lambda \cdot I) (f(x))\]
+    Покажем, что \[\mathcal{D}^k(e^{\lambda x} f(x)) = e^{\lambda x}(\mathcal{D} + \lambda \cdot I)^k(f(x))\]
+    Длказывать будем по индукции, база $k = 1$ проверили. Пусть равенство верно для $k - 1$. Покажем, что справедливо для $k$:
+    \[\mathcal{D}^k(e^{\lambda x} f(x)) = \mathcal{D} \circ \mathcal{D}^{k-1}(e^{\lambda x} f(x)) = \mathcal{D}\left(e^{\lambda x} (\mathcal{D}
+    + \lambda \cdot I)^{k - 1}(f(x))\right)\]
+    Теперь приняв $(\mathcal{D} + \lambda \cdot I)^{k - 1}(f(x))$ за новую функцию и используя базу индукции, получаем:
+    \[\mathcal{D}^k(e^{\lambda x} f(x)) = e^{\lambda x} (\mathcal{D} + \lambda \cdot I)^{k}(f(x))\]
+    Тогда если $\displaystyle P(\lambda) = \sum_{k = 0}^{n} p_k \cdot \lambda^{n-k}$, то $\displaystyle P(\mathcal{D}) = \sum_{k = 0}^{n} p_k \cdot \mathcal{D}^{n-k}$
+    \[P(\mathcal{D})\left(e^{\lambda x} f(x)\right) = \sum_{k = 0}^{n} p_k \cdot \mathcal{D}^{n - k}\left(e^{\lambda x} f(x)\right) = \sum_{k = 0}^{n} 
+    p_k \cdot e^{\lambda x} (\mathcal{D} + \lambda I)^{n-k}(f(x)) = e^{\lambda x} P(\mathcal{D + \lambda I}) (f(x))\]
+\end{proof}
+
+\begin{remark}
+    Вспомним, что многочлены можно записывать следующим образом: \[P(\lambda) = p_0(\lambda - q_1) \cdot ... \cdot (\lambda - q_t)\]
+    Тогда попробуем преобразовать следующий многочлен:
+    \[P(\mathcal{D} + \mu \cdot I)(1) = p_0(\mathcal{D} + (\mu - q_1)I) \circ ... \circ (\mathcal{D} + (\mu - q_t)I)(1) = \] \[=(\mu - q_t) 
+    \cdot p_0 (\mathcal{D} + (\mu - q_1)I) \circ ... \circ (\mathcal{D} + (\mu - q_{t-1})) (1) = ... = P(\mu)\]
+    Тогда заметим вот такую интересную штуку:
+    \[P(\mathcal{D})\left(e^{\mu x}\right) = \left[\text{ формула сдвига } \right] = e^{\mu x} P(\mathcal{D} + \mu \cdot I)(1) = 
+    e^{\mu x} \cdot P(\mu)\]
+\end{remark}
+
+\begin{lemma}
+    Пусть $x_0 \in \mathbb{R}$ фиксированно и \[P(\mathcal{D}) \left(e^{\mu x} x^j\right) \bigg|_{x=x_0} = 0 
+    \quad \mu \in \mathbb{C}, \ \forall j \in \{0, 1, \dots, k\}\]
+    Тогда $\mu$ --- корень многочлена $P$ кратности $s > k$.
+\end{lemma}
+
+\begin{proof}
+    Будем доказывать индукцией по $k$. База $k = 0$: \[P(\mathcal{D})(e^\mu x) \bigg|_{x = x_0} = e^{\mu x} \cdot P(\mu) = 0 \Longrightarrow
+    P(\mu) = 0\] Следовательно, $\mu$ --- корень многочлена $P(\lambda) = 0$ $\Longleftrightarrow s \geq 1$. \\ 
+    Шаг: пусть утверждение справедливо для $k$. Покажем, что справедливо для $k + 1$: \\ пусть $q_1, q_2, ..., q_n$ --- корни многочлена $P$.
+    Из предположения следует, что $\mu$ --- корень кратности $s \geq k+1$. Без ограничения общности считаем, что \[q_1 = q_2 = ... = q_{k+1} = \mu\]
+    Тогда по основной теореме алгебры, \[P(\lambda) = p_0(\lambda - q_n) \cdot (\lambda - q_{n-1}) \cdot ... \cdot (\lambda - q_{k+2}) \cdot (\lambda - \mu)^{k+1}\]
+    Следовательно, по формуле сдвига получаем: \[P(\mathcal{D})(e^{\mu x} x^{k+1}) = e^{\mu x} P(\mathcal{D} + \mu \cdot I) (x^{k+1}) = e^{\mu x} \cdot 
+    p_0(\mathcal{D} + \mu \cdot I - q_n) \circ ... \circ (\mathcal{D} + \mu \cdot I - \mu)^{k+1}(x^{k+1}) = \]
+    \[= e^{\mu x} Q(\mathcal{D} + \mu \cdot I) \circ \mathcal{D}^{k+1}(x^{k+1}) = (k+1)! \cdot e^{\mu x} Q(\mathcal{D} + \mu \cdot I)(1)\]    
+    где $Q(\lambda) = p_0 (\lambda - q_n) \cdot ... \cdot (\lambda - q_{k+2})$. При этом нам известно, что \[P(\mathcal{D})(e^{\mu x}x^{k+1})
+    \bigg|_{x = x_0} = 0 \Longrightarrow Q(\mathcal{D + \mu I})(1) = Q(\mu) = 0\]
+    Отсюда легко получаем, что $\mu$ --- корень многочлена $Q$, тогда $\mu$ --- корень многочлена $P$ кратности $s \geq k+2$.
+\end{proof}
+
+\section{Линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней}
+
+\begin{theorem}
+    Пусть $\lambda_1, \lambda_2, \dots, \lambda_m$ --- попарно различные корни характеристического уравнения $\chi(\lambda) = 0$, алгебраические
+    кратности которых равны $k_1, k_2, \dots, k_m$ соответственно. $\displaystyle \left(\sum_{i = 1}^{m} k_i = n\right)$. Тогда общее решение
+    уравнения (\ref{eq:1}) имеет следующий вид: \[\tag{3} \label{eq:3} y(x) = \sum_{j = 1}^{m} P_j(x) \cdot e^{\lambda_j x}, \quad \text{ где } P_j(x) 
+    \text{ --- многочлен степени } \leq k_j - 1, \ j = 1, \dots, m\]
+\end{theorem}
+
+\begin{proof}
+    Покажем, что любая функция вида (\ref{eq:3}) является решением уравнения (\ref{eq:1}). Уравнение (\ref{eq:1}) можно записать в следующем виде:
+    \[\chi(\mathcal{D})(y(x)) = 0\] Достаточно убедиться, что решениями являются следующие функции: \[e^{\mu x}, x \cdot e^{\mu x}, \dots, x^{k-1}
+    \cdot e^{\mu x}, \quad \text{где } \mu \text{ --- корень } \chi(\lambda) = 0 \text{ кратности } k\]
+    Тогда \[\chi(\lambda) = \zeta(\lambda) \cdot (\lambda - \mu)^k, \quad  \text{где } \zeta(\lambda) \text{ --- многочлен, } \zeta(\mu) \neq 0
+    \text{ (иначе иная кратность у } \mu)\] Следовательно, по формуле сдвига имеем \[\chi(\mathcal{D})(e^{\mu x} \cdot x^j) = e^{\mu x} 
+    \chi(\mathcal{D} + \mu \cdot I)(x^j) = e^{\mu x} \zeta(\mathcal{D + \mu \cdot I}) \cdot \mathcal{D}^k(x^j) = 0 \quad \forall j < k\]
+    То есть, любая функция вида (\ref{eq:3}) является решением уравнения (\ref{eq:1}). \\ 
+    Теперь докажем, что любое решение уравнения (\ref{eq:1}) имеет вид (\ref{eq:3}): определим следующие функции для каждого $\lambda_j$
+    \[y_1(x) = e^{\lambda_1 x}, \ y_2(x) = x \cdot e^{\lambda_1 x}, \dots, \ y_{k_1} (x) = x^{k_1 - 1} e^{\lambda_1 x}\]
+    \[y_{k_1 + 1}(x) = e^{\lambda_2 x},\  y_{k_1 + 2}(x) = x \cdot e^{\lambda_2 x}, \dots, \ y_{k_1 + k_2}(x) = x^{k_2 - 1} \cdot e^{\lambda_2 x}\]
+    \[\vdots\] \[y_{k_1+...+k_{m-1}+1}(x) = e^{\lambda_m x}, \ y_{k_1+...+k_{m-1}+2}(x) = x \cdot e^{\lambda_m x}, \dots, 
+    \ y_{k_1+...+k_m}(x) = y_n(x) = x^{k_m - 1} \cdot e^{\lambda_m x}\]
+    Пусть $y(x)$ --- решение уравнения (\ref{eq:1}) с начальными условием \[y(x_0) = y_0, \ y'(x_0) = y_0', \dots, \ y^{(n-1)}(x_0) = y_0^{(n-1)}\]
+    Покажем, что \[\exists c_1, c_2, \dots, c_n \in \mathbb{C}: \ y(x) = \sum_{k = 1}^{n} c_k \cdot y_k(x)\] Следовательно, 
+    \[y^{(j)}(x) = \sum_{k = 1}^{n} c_k \cdot y_k^{(j)}(x), \quad j = 0, 1, \dots, n-1 \tag{4} \label{eq:4}\]
+    Теперь рассмотрим матрицу системы (\ref{eq:4}): \[M = \begin{pmatrix}
+        y_1(x_0) & \dots & y_n(x_0) \\ y_1'(x_0) & \dots & y_n'(x_0) \\ \vdots & \ddots & \vdots \\ y_1^{(n-1)}(x_0) & \dots & y_n^{(n-1)} (x_0)
+    \end{pmatrix}\]
+    Пусть $M$ вырожденная, тогда ее строки линейно зависимы, следовательно \[\exists b_0, b_1, \dots, b_{n-1} \in \mathbb{C}: \ \sum_{i = 0}^{n - 1}
+    y_j^{(i)} \cdot b_{n-1-i} = 0 \quad \forall j = 0, 1, \dots, n-1\]
+    Тогда рассмотрим многочлен \[P(\lambda) = \sum_{i = 0}^{n-1}b_{n-1-i} \cdot \lambda^i, \ \deg P \leq n-1\] 
+    To be continued...
+\end{proof}
+\end{document}
