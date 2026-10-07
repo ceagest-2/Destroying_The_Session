@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{4}
+\newcommand{\lectureTitle}{Линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней. ФСР линейного однородного ДУ $n$-ого порядка с постоянными коэффициентами. Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами. Квазимногочлены.}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Тот факт, что будильник не прозвенел, изменил уже много человеческих судеб}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/ceagest}{Юра} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Веселье продолжается}
+
+В прошлой лекции мы рассматривали наши любимые линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней. Вот, кстати, это самое уравненьице:
+\[a_0 \cdot y^{(n)} + a_1 \cdot y^{(n - 1)} + \dots + a_{n - 1} \cdot y' + a_n \cdot y = 0, \text{ где } a_0 \neq 0, \ a_1, a_2, \dots, a_n \in \mathbb{C} \tag{1} \label{eq:1}\]
+С ним рука об руку идёт характеристический многочлен:
+\[\chi(\lambda) = a_0 \cdot \lambda^n + a_1 \cdot \lambda^{n-1} + \dots + a_n \tag{2} \label{eq:2}\]
+В доказательстве остановились на самом интересном месте, но, чтобы не утруждать читателя переходом в соседний затех, приведу ту часть доказательства и здесь, а потом незаметно продолжу писать его дальше :)
+
+\begin{theorem}
+    Пусть $\lambda_1, \lambda_2, \dots, \lambda_m$ --- попарно различные корни характеристического уравнения $\chi(\lambda) = 0$, алгебраические
+    кратности которых равны $k_1, k_2, \dots, k_m$ соответственно. $\displaystyle \left(\sum_{i = 1}^{m} k_i = n\right)$. Тогда общее решение
+    уравнения (\ref{eq:1}) имеет следующий вид: \[\tag{3} \label{eq:3} y(x) = \sum_{j = 1}^{m} P_j(x) \cdot e^{\lambda_j x}, \text{ где } P_j(x) 
+    \text{ --- многочлен степени } \leq k_j - 1, \ j = 1, \dots, m\]
+\end{theorem}
+
+\begin{proof}
+    Покажем, что любая функция вида (\ref{eq:3}) является решением уравнения (\ref{eq:1}). Уравнение (\ref{eq:1}) можно записать в следующем виде:
+    \[\chi(\mathcal{D})(y(x)) = 0\] Достаточно убедиться, что решениями являются следующие функции: \[e^{\mu x}, x \cdot e^{\mu x}, \dots, x^{k-1}
+    \cdot e^{\mu x}, \quad \text{где } \mu \text{ --- корень } \chi(\lambda) = 0 \text{ кратности } k\]
+    Тогда \[\chi(\lambda) = \zeta(\lambda) \cdot (\lambda - \mu)^k, \quad  \text{где } \zeta(\lambda) \text{ --- многочлен, } \zeta(\mu) \neq 0
+    \text{ (иначе иная кратность у } \mu)\] Следовательно, по формуле сдвига имеем \[\chi(\mathcal{D})(e^{\mu x} \cdot x^j) = e^{\mu x} 
+    \chi(\mathcal{D} + \mu \cdot I)(x^j) = e^{\mu x} \zeta(\mathcal{D + \mu \cdot I}) \cdot \mathcal{D}^k(x^j) = 0 \quad \forall j < k\]
+    То есть, любая функция вида (\ref{eq:3}) является решением уравнения (\ref{eq:1}). \\ 
+    Теперь докажем, что любое решение уравнения (\ref{eq:1}) имеет вид (\ref{eq:3}): определим следующие функции для каждого $\lambda_j$
+    \[y_1(x) = e^{\lambda_1 x}, \ y_2(x) = x \cdot e^{\lambda_1 x}, \dots, \ y_{k_1} (x) = x^{k_1 - 1} e^{\lambda_1 x}\]
+    \[y_{k_1 + 1}(x) = e^{\lambda_2 x},\  y_{k_1 + 2}(x) = x \cdot e^{\lambda_2 x}, \dots, \ y_{k_1 + k_2}(x) = x^{k_2 - 1} \cdot e^{\lambda_2 x}\]
+    \[\vdots\] \[y_{k_1+...+k_{m-1}+1}(x) = e^{\lambda_m x}, \ y_{k_1+...+k_{m-1}+2}(x) = x \cdot e^{\lambda_m x}, \dots, 
+    \ y_{k_1+...+k_m}(x) = y_n(x) = x^{k_m - 1} \cdot e^{\lambda_m x}\]
+    Пусть $y(x)$ --- решение уравнения (\ref{eq:1}) с начальными условием \[y(x_0) = y_0, \ y'(x_0) = y_0', \dots, \ y^{(n-1)}(x_0) = y_0^{(n-1)}\]
+    Покажем, что \[\exists c_1, c_2, \dots, c_n \in \mathbb{C}: \ y(x) = \sum_{k = 1}^{n} c_k \cdot y_k(x)\] 
+    Многократно дифференцируя равенство выше и подставляя точку $x_0$, получаем следующую системку (не забываем про обозначения из начальных условий выше):
+    \[y_0^{(j)} = \sum_{k = 1}^{n} c_k \cdot y_k^{(j)}(x_0), \quad j = 0, 1, \dots, n-1 \tag{4} \label{eq:4}\]
+    Рассмотрим же матрицу системы (\ref{eq:4}): \[M = \begin{pmatrix}
+        y_1(x_0) & \dots & y_n(x_0) \\ y_1'(x_0) & \dots & y_n'(x_0) \\ \vdots & \ddots & \vdots \\ y_1^{(n-1)}(x_0) & \dots & y_n^{(n-1)} (x_0)
+    \end{pmatrix}\]
+    Если эта матрица невырожденна, то всё доказано --- обратив её, получаем искомые коэффициенты $c_k$. Пусть $M$ вырожденная, тогда ее строки линейно зависимы, следовательно 
+    \[\tag{5} \label{eq:5} \exists b_0, b_1, \dots, b_{n-1} \in \mathbb{C}: \ \sum_{i = 0}^{n - 1} y_j^{(i)} \cdot b_{n-1-i} = 0 \quad \forall j = 1, \dots, n\]
+    Рассмотрим многочлен \[P(\lambda) = \sum_{i = 0}^{n-1} \lambda^i \cdot b_{n-1-i}\]
+    Понятно, что его степень не превосходит $n - 1$ (если коэффициент при старшей степени не ноль, то ровно $n - 1$, иначе строго меньше). Следовательно, по основной теореме алгебры количество его корней также не превосходит $n - 1$. \\
+    Пользуясь нашим вспомогательным многочленом, перепишем (\ref{eq:5}) в эквивалентной операторной форме:
+    \[\tag{6} \label{eq:6} P(\mathcal{D})(y_j) \bigg|_{x = x_0} = 0 \quad \forall j = 1, \ldots, n\]
+    Теперь, вспомним чудесную леммочку, доказанную в прошлой серии:
+    \begin{lemma}
+        Пусть $x_0 \in \mathbb{R}$ фиксированно, $\mu \in \mathbb{C}$, а также \[P(\mathcal{D}) \left(e^{\mu x} x^k\right) \bigg|_{x=x_0} = 0 
+        \quad \forall k \in \{0, 1, \dots, s\}\]
+        Тогда $\mu$ --- корень многочлена $P$ кратности $\geq s + 1$.
+    \end{lemma} \leavevmode
+    \\
+    Заметим, что $y_j$ --- это функции в точности нужного нам вида. Если мы запишем условие (\ref{eq:6}) для $j = 1, \ldots, k_1$, то из леммочки немедленно получим, что $\lambda_1$ --- корень многочлена $P$ кратности $\geq k_1$. Продолжая так делать и дальше, получим, что:
+    \[\lambda_2 \text{ имеет кратность } \geq k_2\]
+    \[\vdots\]
+    \[\lambda_m \text{ имеет кратность } \geq k_m\]
+    Следовательно, у многочлена $P$ корней не меньше, чем $k_1 + k_2 + \ldots + k_m = n$. Но $\deg P \leq n - 1$, откуда получаем противоречие. \\
+    Таким образом, мы доказали, что справедливо равенство (\ref{eq:4}), то есть начальные условия линейным образом выражаются через функции $y_j$, посчитанные в точке $x_0$. Следовательно, по теореме о существовании и единственности решения ЗК, функции $y(x)$ и $\sum_{k = 1}^n c_k \cdot y_k(x)$ совпадают не только в точке $x_0$, но и в целой её окрестности. Тогда по теореме о продолжении решения эти функции совпадают вообще на всей числовой прямой, что и требовалось.
+\end{proof}
+
+\section{Овеществление комплексных решений}
+Теперь встаёт закономерный вопрос об овеществлении решений. Ответит нам на него одноимённая теорема, доказательство которой почти полностью аналогично тому, которое мы проделывали для случая попарно различных корней.
+Здесь мы также предполагаем, что все коэффициенты $a_i$ уравнения (\ref{eq:1}) \textbf{вещественны}.
+
+\begin{theorem}
+    Пусть $\lambda_1, \ldots, \lambda_m$ --- попарно различные корни характеристического уравнения, алгебраические кратности которых равны $k_1, \ldots, k_m$ соответственно ($k_1 + \ldots + k_m = n$). Предположим, что 
+    \[\lambda_{2j - 1} = \alpha_j + i\beta_j, \; \; \lambda_{2j} = \overline{\lambda_{2j - 1}} \quad \forall j = 1, \ldots, l\]
+    \[\lambda_{2l + 1}, \ldots, \lambda_m \in \mathbb{R}\]
+    Тогда общее \textbf{вещественное} решение уравнения (\ref{eq:1}) имеет следующий вид:
+    \[y(x) = \sum_{j = 1}^l e^{\alpha_j x} \cdot (P_j(x) \cos \beta_j x + Q_j(x) \sin \beta_j x) + \sum_{s = 2l + 1}^m R_s(x) e^{\lambda_s x}\]
+    Здесь $P_j$ и $Q_j$ --- многочлены с вещественными коэффициентами, степени которых $\leq k_j - 1$ при $j = 1, \ldots, l$, а $R_s$ --- многочлен степени $\leq k_s - 1$ при $s = (2l + 1), \ldots, m$.
+\end{theorem}
+
+\section{Фундаментальная система решений линейного однородного ДУ $n$-ого порядка с постоянными коэффициентами}
+
+\begin{definition}
+    Говорят, что набор функций $z_1, z_2, \ldots, z_d \colon \mathbb{R} \to \mathbb{C}$ --- фундаментальная система решений уравнения (\ref{eq:1}), если
+    \begin{enumerate}
+        \item $z_1(x), z_2(x), \ldots, z_d(x)$ --- линейно независимы, то есть
+        \[\sum_{k = 1}^d c_k z_k(x) = 0 \; \; \forall x \in \mathbb{R} \implies c_1 = c_2 = \ldots = c_d = 0\]
+        \item Любое решение уравнения (\ref{eq:1}) является линейной комбинацией $z_1(x), z_2(x), \ldots, z_d(x)$.
+    \end{enumerate}
+\end{definition} \leavevmode
+\\
+Доказывая теорему $1.1$, мы на самом деле показали, что пространство решений (\ref{eq:1}) конечномерно, и базисом в нём можно взять как раз функции $y_j$ (легко показать, что они линейно независимы, так как они суть экспонента на моном). Таким образом, мы установили
+
+\begin{consequence}
+    ФСР уравнения (\ref{eq:1}) существует. Более того, она состоит из $n$ функций (то есть $d = n$).
+\end{consequence}
+
+\section{Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами}
+
+Теперь будем рассматривать уравнения следующего вида:
+
+\[\tag{7} \label{eq:7} a_0 y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_n y = F(x), \; \; a_0, a_1, \ldots, a_n \in \mathbb{C}, \; \; a_0 \neq 0\]
+\[F \colon I \to \mathbb{R}, \; \; I \subset \mathbb{R} \text{ --- интервал}\]
+
+\begin{remark}
+    Следующие два утверждения позволяют чуть больше понять, как же устроено общее решение (\ref{eq:7}):
+    \begin{enumerate}
+        \item Пусть $y_1(x)$ --- решение \textbf{соответствующего} однородного уравнения (\ref{eq:1}), а $y_2(x)$ --- решение уравнения (\ref{eq:7}). Тогда $y(x) = y_1(x) + y_2(x)$ --- решение уравнения (\ref{eq:7}).
+        \item Пусть $y_1(x), y_2(x)$ --- решения уравнения (\ref{eq:7}). Тогда $y_1(x) - y_2(x)$ --- решение уравнения (\ref{eq:1}).
+    \end{enumerate}
+\end{remark}
+
+\begin{proof}
+    Докажем утверждения по очереди.
+    \begin{enumerate}
+        \item Так как $y_1(x)$ --- решение (\ref{eq:1}), то 
+        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = 0\]
+        Так как $y_2(x)$ --- решение (\ref{eq:7}), то 
+        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
+        Следовательно,
+        \[a_0 (y_1 + y_2)^{(n)} + \ldots + a_n (y_1 + y_2) = F(x)\]
+        \item Так как $y_1(x)$ и $y_2(x)$ --- решения (\ref{eq:7}), то 
+        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = F(x)\]
+        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
+        Следовательно,
+        \[a_0 (y_1 - y_2)^{(n)} + \ldots + a_n (y_1 - y_2) = 0\]
+    \end{enumerate}
+\end{proof} \leavevmode
+\\
+Из этого замечания сразу следует, что общее решение неоднородного уравнения (\ref{eq:7}) есть сумма частного решения (\ref{eq:7}) и общего решения однородного уравнения (\ref{eq:1}). Таким образом, задача об изучении множества решений (\ref{eq:7}) свелась к задаче о поиске частного решения (\ref{eq:7}). Этим мы и будем заниматься дальше.
+
+\subsection{Квазимногочлены}
+
+Будем обозначать за $\mathbb{R}_n[x]$ пространство многочленов с вещественными коэффициентами от переменной $x$ степени $\leq n$. Также условимся, что $\mathbb{R}[x]$ --- кольцо многочленов над полем $\mathbb{R}$, то есть
+\[\mathbb{R}[x] = \bigcup_{n \geq 0} \mathbb{R}_n[x]\]
+
+\begin{definition}
+    \textbf{Квазимногочленом} $F$ степени $m$ с показателем $\lambda = \alpha + i \beta$ называется функция вида
+    \[F(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x), \; \; p, q \in \mathbb{R}[x], \; \; \max \{\deg p, \deg q\} = m\]
+\end{definition}
+
+\begin{definition}
+    Определим \textbf{пространство квазимногочленов} фиксированной степени и фиксированного показателя:
+    \[Q_{\lambda, m} = \{r(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x) \; | \; p, q \in \mathbb{R}_{m - 1}[x]\} \]
+\end{definition} \leavevmode
+\\
+Из определения вытекает очевидное наблюдение:
+\[Q_{\overline{\lambda}, m} = Q_{\lambda, m}\]
+
+\begin{definition}
+    Для дальнейшей работы нам понадобится ещё и такое пространство:
+    \[Q_{\lambda, m}^k = \{x^k r(x) \; | \; r \in Q_{\lambda, m}\}, \; \; k \in \mathbb{Z}_{+}\]
+\end{definition}
+
+\begin{remark}
+    Отметим следующие милые тривиальные свойства:
+    \begin{enumerate}
+        \item \[Q_{\lambda, m}^k \subset Q_{\lambda, m + k}\]
+        \item \[Q_{\overline{\lambda}, m}^k = Q_{\lambda, m}^k\]
+    \end{enumerate}
+\end{remark}
+
+\begin{remark}
+    Если $\lambda = \alpha$, то есть $\beta = 0$, то
+    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \; | \; t = 0, 1, \ldots, (m - 1)\right\rangle \]
+    Если же $\lambda = \alpha + i \beta$, то есть $\beta \neq 0$, то 
+    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\right\rangle \]
+\end{remark}
+
+\begin{exercise}
+    Покажите, что все функции, входящие в набор
+    \[\{e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\}\]
+    являются линейно независимыми.
+\end{exercise}
+
+\begin{theorem}
+    Пусть $F \in Q_{\mu, m}$, $\mu \in \mathbb{C}$, а $s$ --- кратность $\lambda = \mu$ как корня характеристического уравнения $\chi(\lambda) = 0$ ($s = 0$, если $\lambda = \mu$ не является корнем). Тогда у уравнения (\ref{eq:7}) есть частное решение, которое принадлежит $Q_{\mu, m}^s$.
+\end{theorem}
+
+\begin{proof}
+    Проведем доказательство для $\mu \in \mathbb{R}$. Пусть $\mu$ --- корень $\chi(\lambda) = 0$ кратности $s \geq 0$. Тогда
+    \[\chi(\lambda) = \zeta(\lambda)(\lambda - \mu)^s\]
+    Здесь многочлен $\zeta(\mu) \neq 0$. Тогда уравнение (\ref{eq:7}) эквивалентно
+    \[\tag{8} \label{eq:8} \chi(\mathcal{D})(y(x)) = F(x)\]
+    Но
+    \[\chi(\mathcal{D}) = \zeta(\mathcal{D})(\mathcal{D} - \mu \mathcal{I})^s\]
+    Покажем, что отображение $\chi(\mathcal{D}) \colon Q_{\mu, m}^s \to Q_{\mu, m}$ является биекцией. Тогда, обратив его, при помощи равенства (\ref{eq:8}) получим искомое частное решение. \\
+    Достаточно показать, что каждое из отображений 
+    \[(\mathcal{D} - \mu \mathcal{I})^s \colon Q_{\mu, m}^s \to Q_{\mu, m}\]
+    \[\zeta(\mathcal{D}) \colon Q_{\mu, m} \to Q_{\mu, m}\]
+    является биекцией в силу представления выше. \\
+    \textbf{To be continued...}
+\end{proof}
+
+\end{document}
