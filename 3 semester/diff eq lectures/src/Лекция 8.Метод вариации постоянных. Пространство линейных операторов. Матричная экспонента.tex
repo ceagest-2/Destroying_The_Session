@@ -1,0 +1,283 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{8}
+\newcommand{\lectureTitle}{Метод вариации постоянных. Пространство линейных операторов. Матричная экспонента.}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Шпуля, а подумать?}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/mallina_olga}{Фиксик ночью постарался} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{А помните...}
+Вспомним, что мы рассматриваем неоднородную систему дифференциальных уравнений
+\begin{equation}
+    \begin{aligned}
+        \dot{x} &= Ax+b, \quad A\in \mathrm{Mat}_{n\times n}(\mathbb{R})\\
+        b &: I\to \mathbb{R}^n, \quad I\subset \mathbb{R}
+        \text{ --- интервал}, \quad x(t)\in \mathbb{R}^n
+    \end{aligned}
+    \label{eq:1}
+\end{equation}
+
+
+\begin{statement}
+    (Теорема о суперпозиции) Если $b(t) = b_1(t)+b_2(t)$, а $x_1(t)$ и $x_2(t)$ --- решения $\dot{x}= Ax+b_1$ и $\dot{x} = Ax+b_2$ соответственно, то 
+    $x(t)=x_1(t) + x_2(t)$ --- решение \eqref{eq:1}.
+\end{statement}
+
+\begin{proof}
+    \[ \dot{x}(t)= \dot{x_1}(t)+ \dot{x_2}(t) = Ax_1(t)+ b_1(t) + Ax_2(t) + b_2(t) = A(x_1(t)+x_2(t)) + (b_1(t)+b_2(t)) = Ax(t) + b(t) \] 
+\end{proof}
+
+\section{Метод вариации постоянных}
+
+Перед тем, как формулировать теорему, вспомним с прошлой лекции: $\Phi(t)$ --- фундаментальная матрица решений $\dot{x} = Ax$  $\Rightarrow \dot{\Phi} = A\Phi  $
+
+    
+\begin{theorem}
+    Пусть $b\in C(I)$. Тогда 
+    \[ x(t) = \Phi(t)c_0 + \Phi(t) \int_{t_0}^{t} \Phi^{-1}(s)b(s)\, ds \text{--- решение } \eqref{eq:1}, c_0\in \mathbb{R}^n, t\in I, t_0\in I \] 
+    Причём, $ \Phi(t)c_0$ --- общее решение однородного уравнения, а $\displaystyle \Phi(t) \int_{t_0}^{t} \Phi^{-1}(s)b(s)\, ds$ --- частное решение неоднородного уравнения. 
+\end{theorem}
+
+\begin{proof}
+    Будем искать решение \eqref{eq:1} в виде $x(t) = \Phi(t)c(t)$. Тогда, так как это решение, то продифференцируем его: 
+    \[ \Rightarrow \dot{x}(t) = \dot{\Phi}(t)c(t) + \Phi(t)\dot{c}(t) = A\Phi(t)c(t)+ \Phi(t)\dot{c}(t)   \]
+    Но с другой стороны, подставим эту же вектор-функцию $x(t) = \Phi(t)c(t)$ в правую часть уравнения \eqref{eq:1} и получим:
+    \[ \dot{x}(t) =  \dot{\Phi}(t)c(t) + \Phi(t)\dot{c}(t) = A\Phi(t)c(t)+ \Phi(t)\dot{c}(t) = A\Phi(t)c(t)+b(t) \Rightarrow  \Phi(t)\dot{c}(t) = b(t) \]  
+    $\Phi(t)$ --- обратимая матрица, а значит получим:  
+    \[ \dot{c}(t) = \Phi^{-1}(t)b(t) \Rightarrow c(t) = c_0 \int_{t_0}^{t} \Phi^{-1}(s) b(s)\, dt \Rightarrow x(t) = \Phi(t)c_0 + \Phi(t) \int_{t_0}^{t} \Phi^{-1}(s)b(s)\, ds \] 
+\end{proof}
+
+
+\begin{consequence}
+    Если $0\in I$ и $\Phi(0) = E$, то общее решение задачи Коши 
+    \[ \begin{cases}
+        \dot{x} = Ax+b \\
+        x(0) = x_0
+    \end{cases} \]
+    \[ x(t) = \Phi(t)x_0 + \int_{0}^{t} \Phi(t-s) b(s) \, ds \] 
+\end{consequence}
+
+\subsection*{Снова небольшие флешбеки с прошлой лекции (полезно для понимания предыдущего следствия)}
+Если $\Phi(0) = E$, то 
+\begin{itemize}
+    \item $\Phi(t) \cdot \Phi(s) = \Phi(t+s) $
+    \item $\Phi^{-1}(t) = \Phi(-t) $
+\end{itemize}
+
+\section{Пространство линейных операторов}
+\begin{definition}
+    Будем считать, что $\mathcal{A} : \mathbb{R}^n \to \mathbb{R}^n , \mathcal{A}$ --- линейный оператор \\
+    Но на самом деле, в общем случае $ \mathcal{A} : V\to V, dim\, V = n $\\
+    $\mathcal{L} = \mathcal{L}(V,V)  $ --- пространство линейных операторов из $V$ в $V$ \\
+    \[ \lVert \mathcal{A} \rVert \doteqdot \sup_{x \neq 0 } \frac{|\mathcal{A}x|}{|x|} = \sup_{|x|=1} |\mathcal{A}x| = \max_{|x|=1} |\mathcal{A}x|  \]
+    Для понимания предыдущего равенства, важно осознать следующее:
+    \[ \frac{|\mathcal{A}x|}{|x|} = \left| \mathcal{A} \frac{x}{|x|} \right| \] 
+\end{definition}
+
+
+\begin{statement}
+    $(\mathcal{L}, \lVert \cdot \rVert)$ --- нормированное пространство, причём $\lVert \mathcal{A} \circ  \mathcal{B} \rVert \leq \lVert \mathcal{A}  \rVert \cdot \lVert \mathcal{B} \rVert$
+\end{statement}
+
+
+\begin{proof}
+    Для доказательства, необходимо проверить следующие аксиомы: 
+    \begin{itemize}
+        \item $\lVert \mathcal{A} \rVert \geq 0 $
+        \item $ \lVert \mathcal{A} \rVert = 0 \Rightarrow \mathcal{A} = 0 $
+        \item $ | (\lambda \mathcal{A}) x | = | \lambda (\mathcal{A}x) | = |\lambda| \cdot |\mathcal{A} x | $
+    \end{itemize}
+    \[ \Rightarrow \lVert \lambda \mathcal{A} \rVert = \sup_{x\neq 0} \frac{|(\lambda \mathcal{A})x|}{|x|} = |\lambda| \cdot \sup_{x\neq 0} \frac{|\mathcal{A}x|}{|x|} = |\lambda| \cdot \lVert \mathcal{A} \rVert \]    
+    \begin{itemize}
+        \item $\displaystyle \frac{| \mathcal{A}x|}{|x|} \leq \lVert \mathcal{A} \rVert \quad \forall x \neq \bar{0} $
+    \end{itemize}
+    Теперь докажем неравенство треугольника:
+    \[ |\mathcal{A}x| \leq \lVert \mathcal{A} \rVert \cdot | x | \Rightarrow |(\mathcal{A} + \mathcal{B})x| = |\mathcal{A}x + \mathcal{B}x |  \leq |\mathcal{A}x| + |\mathcal{B}x| \leq \lVert \mathcal{A} \rVert |x| + \lVert \mathcal{B} \rVert |x|  \]   
+    \[ \Rightarrow \frac{|(\mathcal{A+B})x|}{|x|} \leq \lVert \mathcal{A} \rVert +  \lVert \mathcal{B} \rVert \Rightarrow \lVert \mathcal{A+B} \rVert \leq \lVert \mathcal{A} \rVert + \lVert \mathcal{B} \rVert  \] 
+    \begin{itemize}
+        \item Теперь докажем  $\lVert \mathcal{A} \circ  \mathcal{B} \rVert \leq \lVert \mathcal{A}  \rVert \cdot \lVert \mathcal{B} \rVert$
+     \[ | (\mathcal{A} \circ \mathcal{B}) x | = |\mathcal{A} (\mathcal{B}x) | \leq \lVert  \mathcal{A} \rVert \cdot | \mathcal{B} x| \leq \lVert \mathcal{A} \rVert \cdot \lVert \mathcal{B} \rVert \cdot |x| \] 
+     Поделим обе части неравенства на $|x|$ и получим:  
+    \[ \Rightarrow \frac{|(\mathcal{A} \circ \mathcal{B}) x| }{|x|} \leq \lVert \mathcal{A} \rVert \lVert \mathcal{B} \rVert \] 
+    \end{itemize}
+   
+\end{proof}
+
+
+\begin{statement}
+    Рассмотрим пространство линейных операторов $(\mathcal{L}, \rho)$  и введём на нем следующую метрику: $\rho (\mathcal{A}, \mathcal{B}) = \lVert \mathcal{A-B} \rVert $,  тогда $(\mathcal{L}, \rho)$ --- полное метрическое пространство. 
+\end{statement}
+
+
+\begin{theorem}
+    (Признак Вейерштрасса) Пусть $(X, \lVert \cdot \rVert)$ --- полное нормированное пространство над $\mathbb{R}$. Пусть 
+    \[ \exists \{a_k\}_{k=1}^{\infty}: \lVert f_j(t) \rVert \leq a_j \ \forall t\in I, \forall j\in \mathbb{N} \text{, где } f_j: I\to X, I\subset \mathbb{R} \text{ --- интервал} \] 
+    Также $\displaystyle \sum_{k=1}^{\infty} a_k < \infty, t\in I \to f_j(t)\in X$. Тогда функциональный ряд $\displaystyle \sum_{j=1}^{\infty} f_j(t)$ сходится абсолютно и равномерно на $I$. 
+\end{theorem}
+
+\begin{theorem}
+    (О дифференцировании функциональных рядов) Пусть $(X, \lVert \cdot \rVert)$ --- полное нормированное пространство. Пусть $f_j: I\to X, I\subset \mathbb{R}$ --- интервал. Предположим, что $\displaystyle \sum_{j=1}^{\infty} f_j(t)$ сходится к $s(t)\in X, t\in I$, а ряд $\displaystyle \sum_{j=1}^{\infty} \frac{d}{dt} f_j(t)$ сходится 
+    равномерно на $I$. Тогда $\displaystyle \exists \frac{d}{dt} s(t)$ и $\displaystyle \sum_{j=1}^{\infty} \frac{d}{dt} f_j(t) = \frac{d}{dt}s(t), t\in I$. 
+\end{theorem}
+
+
+\section{Матричная экспонента}
+
+\begin{definition}
+\[ A\in \mathrm{MAT}_{n\times n} (\mathbb{R}), \lVert A \rVert = \max_{|x|=1} |Ax|  \]
+\end{definition}
+
+\begin{equation}
+    e ^A = E+ \frac{A^1}{1!} + \frac{A^2}{2!} + \ldots + \frac{A^n}{n!} + \ldots 
+    \label{eq:2}
+\end{equation}
+
+\begin{statement}
+    $ \forall A\in \mathrm{MAT}_{n\times n} (\mathbb{R})$ ряд \eqref{eq:2} сходится, причём $\forall a>0$ ряд \eqref{eq:2} сходится равномерно на 
+    \[ \mathcal{K} = \{ A\in \mathrm{MAT}_{n\times n} (\mathbb{R}) | \lVert A \rVert < a \} \] 
+\end{statement}
+
+\begin{proof}
+    Доказательство опирается на следующий факт:
+    \[ \lVert A^k \rVert \leq \lVert A \rVert ^ k  \ k\in \mathbb{Z}_+  \]  
+    \[ \lVert e^A \rVert = \left \lVert \sum_{k=0}^{+\infty} \frac{A^k}{k!} \right \rVert \leq \sum_{k=0}^{+\infty} \frac{\lVert A^k \rVert}{k!} \leq \sum_{k=0}^{+\infty} \frac{\lVert A \rVert ^k }{k!} = e^{\lVert A \rVert} < e^a < \infty \]    
+\end{proof}
+
+
+
+\begin{theorem}
+    (Свойства матричной экспоненты)
+    \begin{enumerate}
+        \item \[ A = diag (\lambda_1, \lambda_2, \ldots , \lambda_n) \Rightarrow e^A = diag(e^{\lambda_1}, e^{\lambda_2}, \ldots , e^{\lambda^n}) \]   
+        \item Если матрица $A$  --- блочно-диагональная, то есть: \[ A =
+        \begin{pmatrix}
+            \boxed{B_1} & 0 & \cdots & 0 \\
+            0 & \boxed{B_2} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \boxed{B_s}
+        \end{pmatrix} \]
+        Здесь $B_1, B_2, \ldots, B_s$ --- квадратные матрицы. Тогда 
+        \[ \Rightarrow e^A = 
+        \begin{pmatrix}
+            \boxed{e^{B_1}} & 0 & \cdots & 0 \\
+            0 & \boxed{e^{B_2}} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \boxed{e^{B_s}}
+        \end{pmatrix} \]
+        \item \[ AB = BA \Rightarrow e^{A+B} = e^A \cdot e^B \]  
+        \item \[ N^k = 0 \Rightarrow e^N = E + \frac{N}{1!} + \ldots + \frac{N^{k-1}}{(k-1)!} \]   
+        \item $J_n(\lambda)$ --- Жорданова клетка размера $n\times n$, соответствующая собственному значению $\lambda$. 
+        Тогда
+        \[ e^{J_n(\lambda)t} = 
+        \begin{pmatrix}
+            1 & \frac{t}{1!} & \frac{t^2}{2!} & \cdots
+            & \frac{t^{n-1}}{(n-1)!} \\
+            0 & 1 & \frac{t}{1!} & \cdots
+            & \frac{t^{n-2}}{(n-2)!} \\
+            0 & 0 & 1 & \ddots & \vdots \\
+            \vdots & \vdots & \ddots & \ddots & \frac{t}{1!} \\
+            0 & 0 & \cdots & 0 & 1
+        \end{pmatrix} e^{\lambda t}
+        \] 
+        \item \[ B= S^{-1}AS \Rightarrow e^B = S^{-1} e^A S \] 
+        \item \[ \det e^A = e^{tr A} \]  
+        \item Если $v$ --- собственный вектор для $A$ с собственным значением $\lambda$, то $v$ --- собственный вектор для $e^A$ с собственным значением $e^{\lambda}$ 
+        \item $e^{At}$ --- фундаментальная матрица $\dot{x} = Ax$, то есть 
+        \[ \frac{d}{dt} (e^{At}) = Ae^{At} \] 
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    Свойство $1)$ доказывать не будем, так как оно вытекает из свойства $2)$. 
+    $2)$ \[ A^k = 
+    \begin{pmatrix}
+            \boxed{B_1^k} & 0 & \cdots & 0 \\
+            0 & \boxed{B_2^k} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \boxed{B_s^k}
+        \end{pmatrix} , k\in \mathbb{Z}_+
+    \Rightarrow e^A = 
+    \begin{pmatrix}
+        e^{B_1} & 0 & \cdots & 0 \\
+        0 & e^{B_2} & \ddots & \vdots \\
+        \vdots & \ddots & \ddots & 0 \\
+        0 & \cdots & 0 & e^{B_s}
+    \end{pmatrix} \] 
+    $3)$ Для доказательства третьего свойства сначала вспомним, что такое бином Ньютона:
+    \[ (a+b)^k = \sum_{s=0}^{k} C_k^s a^s b^{k-s} \] 
+    Также поймём следующее:
+    \[ AB = BA \Rightarrow A^kB^l = B^lA^k \ \forall k,l \in \mathbb{Z}_+ \]   
+    Тогда имеем:
+    \[ e^{A+B} = \sum_{k=0}^{+\infty} \frac{(A+B)^k}{k!} = \sum_{k=0}^{+\infty} \sum_{s=0}^{k} \frac{1}{k!} C_k^s A^s B^{k-s} = \sum_{k=0}^{+\infty} \sum_{s=0}^{k} \frac{1}{s! (k-s)!} A^sB^{k-s} \]   
+    \[ e^A \cdot e^B = (E + \frac{A}{1!} + \ldots + \frac{A^s}{s!}+ \ldots ) (E+ \frac{B}{1!} + \ldots + \frac{B^{k-s}}{(k-s)!} + \ldots) = \sum_{k=0}^{+\infty} \sum_{s=0}^{k} \frac{1}{s! (k-s)!} A^s B^{k-s} \] 
+    $5)$ \[ J_n(\lambda) = \lambda E_n + N , N = \underbrace{
+        \begin{pmatrix}
+            0 & 1 & 0 & \cdots & 0 \\
+            0 & 0 & 1 & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & 0 & 1 \\
+            0 & \cdots & \cdots & 0 & 0
+        \end{pmatrix}
+        }_{n}  
+    \]
+    Также поймём, что:
+    \[ (\lambda E_n) N = N(\lambda E_n) \] 
+    \[ N^n =0 \] 
+    \[ e^{J_n(\lambda) t} = e^{\lambda E_n t+ Nt} = e^{\lambda E_n t} \cdot e^{Nt} = e^{\lambda t} \cdot E_n \cdot ( E+ \frac{Nt}{1!} + \ldots + \frac{N^{n-1}t^{n-1}}{(n-1)!}) = e^{\lambda t}
+    \begin{pmatrix}
+            1 & \frac{t}{1!} & \frac{t^2}{2!} & \cdots
+            & \frac{t^{n-1}}{(n-1)!} \\
+            0 & 1 & \frac{t}{1!} & \cdots
+            & \frac{t^{n-2}}{(n-2)!} \\
+            0 & 0 & 1 & \ddots & \vdots \\
+            \vdots & \vdots & \ddots & \ddots & \frac{t}{1!} \\
+            0 & 0 & \cdots & 0 & 1
+        \end{pmatrix} \] 
+
+\end{proof}
+
+
+
+
+\end{document} 
