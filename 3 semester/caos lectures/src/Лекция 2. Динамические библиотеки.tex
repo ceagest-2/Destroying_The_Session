@@ -1,0 +1,359 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Imm}{Im}
+\DeclareMathOperator{\rg}{rg}
+
+% Настройка колонтитулов
+\pagestyle{fancy}
+\fancyhf{} % Очистить все поля
+\fancyhead[L]{Кабы не было dynamic interpreter}
+\fancyhead[R]{\href{https://t.me/ZNickA8871}{Автор}}
+\fancyfoot[C]{\thepage}               % Справа внизу
+
+\setlength{\headheight}{13.6pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+}
+
+\begin{document}
+
+{\Huge\bfseries Лекция 2. \newlineДинамические библиотеки\par}
+
+\vspace{2em}
+
+\section{Зачем?}
+
+Команда \nolint|ldd| для статически  слинкованных файлов (флаг -static при линковке) пишет ``not a dynamic executable''. Для нас это значит, что они запустятся незавсимо от того, есть ли у нашего пользователя те библиотеки, которые мы используем. Но при такой сборке даже простой hello world весит около 2 мегабайт. Это больно, особенно когда хочется иметь в системе много маленьких программ на все случаи жизни. Вот эту проблему и решают динамические библиотеки. Они уменьшают объём исполняемого файла,
+
+Посмотрим, например, утилиту ls:
+\newline
+\nolint|which ls| покажет нам, где она находится,
+\newline
+\nolint|readelf -h <path>| сообщит, что она слинкована динамически,
+\newline
+\nolint|ldd <path>| выведет её зависимости.
+
+Прикол в том, что эти зависимости загружаются в оперативную память один раз для всех, кому они нужныб и все запущенные программы просто переиспользуют один и тот же инстанс в памяти (точнее, переиспользуются только read-only секции, но об этом в следующих лекциях).
+
+А теперь мы, допустим, мы захотели создать свою библиотеку.
+Создадим два файла:
+
+\nolint|multiply.cpp|, наша библиотека:
+\begin{lstlisting}[language=C++]
+int multiply(int x, int y) {
+  return x * y;
+}
+\end{lstlisting}
+
+\nolint|main.cpp|, который будет ее использовать:
+\begin{lstlisting}[language=C++]
+#include <iostream>
+
+int multiply(int, int);
+
+int main() {
+  int x, y;
+  std::cin >> x >> y;
+  std::cout << multiply(x, y);
+}
+\end{lstlisting}
+
+\newpage
+
+Для начала соберём объектные файлы, а затем слинкуем их:
+
+\begin{lstlisting}
+g++ -c main.cpp
+g++ -c multiply.cpp
+g++ main.o multiply.o
+\end{lstlisting}
+
+И оно даже заработает. Но сейчас мы просто статически прилинковали multiply.o к main.o, а мы хотели именно динамическую библиотеку.
+
+\subsection{Создание динамической библиотеки}
+
+Соберём файл с расширением \nolint|.so|:
+
+\begin{lstlisting}
+  g++ -shared multiply.cpp -o multiply.so
+\end{lstlisting}
+
+Забавно, что у полученного файла может быть выставлен бит исполнения (\nolint|ls -l multiply.so|),
+но попытка запустить его как обычную программу заканчивается ошибкой segmentation fault.
+Посмотрим на файл подробнее:
+\begin{lstlisting}
+readelf -a multiply.so
+\end{lstlisting}
+В заголовке он обозначен как динамическая библиотека:
+\begin{lstlisting}
+Type: DYN (Shared object file)
+\end{lstlisting}
+
+В файле есть таблица динамических символов \nolint|.dynsym|. В ней находятся символы, которые может использовать динамический линковщик при запуске программы. Есть ещё похожая таблица \nolint|.symtab|, в ней содержатся все символы (и глобальные, и локальные), нужна она в основном для отладки и может быть удалена утилитой \nolint|strip|.
+
+Утилита \nolint|objcopy| позволяет редактировать ELF-файлы. Ещё для работы с ними есть
+полезная утилита \nolint|patchelf|.
+
+Несмотря на то, что код динамической библиотеки загружается в оперативную память один раз для
+нескольких процессов, секции \nolint|.data| и \nolint|.bss| у каждого процесса свои. Их страницы могут
+физически быть общими до первой записи из-за оптимизации \textit{copy-on-write} (COW).
+
+\subsection{Линковка с библиотекой}
+
+Ключ \nolint|-l<name>| добавляет библиотеку при линковке:
+
+\begin{lstlisting}
+g++ main.cpp -lmultiply
+\end{lstlisting}
+
+Пока не работает: линковщик ожидает, что имя файла библиотеки начинается с префикса
+\nolint|lib|, поэтому переименуем файл:
+
+\begin{lstlisting}
+mv multiply.so libmultiply.so
+\end{lstlisting}
+
+Всё ещё не работает: линковщик ищет библиотеки только в определённых каталогах, в том числе
+в \nolint|/usr/lib|. Можно скопировать библиотеку туда:
+
+\begin{lstlisting}
+sudo cp libmultiply.so /usr/lib
+g++ main.cpp -lmultiply
+\end{lstlisting}
+
+Теперь сборка проходит, а зависимости программы можно посмотреть с помощью \nolint|ldd|. Однако
+копировать тестовую библиотеку в системный каталог необязательно. Удалим её оттуда и добавим
+текущий каталог в путь поиска линковщика ключом \nolint|-L|:
+
+\begin{lstlisting}
+sudo rm /usr/lib/libmultiply.so
+g++ main.cpp -lmultiply -L.
+\end{lstlisting}
+
+Сборка теперь пройдет, но программа при запуске может не найти библиотеку. Путь
+поиска на этом этапе можно задать переменной окружения \nolint|LD_LIBRARY_PATH|, но на некоторых системах он уже задан как \nolint|/usr/local/lib:|, а пустой элемент после двоеточия означает текущую папку, поэтому, вероятно, программа запустится и так. Иначе, можно явно указать директорию поиска вот так:
+
+\begin{lstlisting}
+LD_LIBRARY_PATH=. ./a.out
+\end{lstlisting}
+
+Другой вариант --- записать путь поиска в сам исполняемый файл при линковке:
+
+\begin{lstlisting}
+g++ main.cpp -lmultiply -L. -Wl,-rpath=<absolute path>
+g++ main.cpp -lmultiply -L. -Wl,-rpath=.
+readelf -d a.out
+\end{lstlisting}
+
+В выводе \nolint|readelf| появится запись \nolint|RUNPATH|:
+
+\begin{lstlisting}
+0x000000000000001d (RUNPATH) Library runpath: [.]
+\end{lstlisting}
+
+Итак, ключ \nolint|-L| задаёт путь поиска библиотек во время сборки, а \nolint|LD_LIBRARY_PATH| и
+\nolint|RUNPATH| --- во время запуска.
+
+\subsection{SONAME}
+
+В заголовке динамической библиотеки может быть указано поле \nolint|SONAME|.
+Пусть при линковке используется файл \nolint|libmultiply.so|, а в его поле
+\nolint|SONAME| записано другое имя, например, \nolint|libmultiplyhaha.so|. Тогда линковщик найдёт библиотеку по имени файла, но в список зависимостей
+запишет именно \nolint|SONAME|.
+
+Это позволяет при сборке использовать конкретную версию библиотеки, например
+\nolint|libfoo.so.1.4.7|, а при запуске искать её по символической ссылке вроде
+\nolint|libfoo.so.1|. Библиотеку можно обновлять, пока её интерфейс остаётся совместимым.
+\newpage
+
+Зададим нашей библиотеке другой \nolint|SONAME| и ещё раз соберём программу:
+
+\begin{lstlisting}
+g++ -shared multiply.cpp -o libmultiply.so -Wl,-soname=libmultiplyhaha.so
+g++ main.cpp -lmultiply -L. -Wl,-rpath=.
+ldd a.out
+\end{lstlisting}
+
+В результате в списке зависимостей окажется новое имя, но файла с таким именем ещё нет:
+
+\begin{lstlisting}
+linux-vdso.so.1
+libmultiplyhaha.so => not found
+libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6
+libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6
+libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6
+/lib64/ld-linux-x86-64.so.2
+libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1
+\end{lstlisting}
+После этого пересоберем библиотеку без \nolint|-soname|
+\begin{lstlisting}
+g++ -shared multiply.cpp -o libmultiply.so
+\end{lstlisting}
+
+\subsection{Patchelf}
+
+Путь поиска можно добавить и в уже собранный ELF-файл. Сначала соберём программу
+без \nolint|RUNPATH|, а затем изменим его утилитой \nolint|patchelf|:
+
+\begin{lstlisting}
+g++ main.cpp -lmultiply -L.
+patchelf a.out --set-rpath .
+\end{lstlisting}
+
+После этого программа запускается. Врзможно, patchelf у вас не установлен, на Ubuntu ставим так:
+\begin{lstlisting}
+sudo apt install patchelf
+\end{lstlisting}
+
+\newpage
+\section{Динамический линковщик}
+
+Возьмем код из предыдущей лекции:
+\begin{lstlisting}[language=C++]
+#include <iostream>
+
+int main() {
+  int x;
+  std::cin >> x;
+  std::cout << x + 5;
+  return 0;
+}
+\end{lstlisting}
+Соберем объектный файл, а затем попробуем его слинковать. Чтобы было от чего отталкиваться, посмотрим зависимости обычного \nolint|a.out|:
+
+\begin{lstlisting}
+ldd a.out
+\end{lstlisting}
+
+\begin{lstlisting}[style=nolint]
+linux-vdso.so.1
+libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6
+libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6
+libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6
+/lib64/ld-linux-x86-64.so.2
+libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1
+\end{lstlisting}
+
+Попробуем вызвать \nolint|ld| вручную и перечислить ему нужные библиотеки:
+
+\begin{lstlisting}
+ld main.o /lib/x86_64-linux-gnu/libstdc++.so.6 \
+  /lib/x86_64-linux-gnu/libc.so.6 \
+  /lib/x86_64-linux-gnu/libm.so.6 \
+  /lib64/ld-linux-x86-64.so.2 \
+  /lib/x86_64-linux-gnu/libgcc_s.so.1
+\end{lstlisting}
+Получим warning
+\begin{lstlisting}
+ld: warning: cannot find entry symbol _start; defaulting to
+\end{lstlisting}
+А при запуске ошибку
+\begin{lstlisting}
+bash: ./a.out: cannot execute: required file not found
+\end{lstlisting}
+\newpage
+Сначала разберёмся с warningом. Добавим объектные файлы, с которых начинается и которыми заканчивается наша программа:
+
+\begin{lstlisting}
+ld main.o \
+  /lib/x86_64-linux-gnu/libstdc++.so.6 \
+  /lib/x86_64-linux-gnu/libm.so.6 \
+  /lib64/ld-linux-x86-64.so.2 \
+  /lib/x86_64-linux-gnu/libgcc_s.so.1 \
+  /lib/x86_64-linux-gnu/libc.so.6 \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o \
+  /usr/lib/x86_64-linux-gnu/crtn.o \
+  /usr/lib/x86_64-linux-gnu/Scrt1.o \
+  /usr/lib/x86_64-linux-gnu/crti.o \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o
+\end{lstlisting}
+Теперь она даже соберется, но тут всё ещё есть две ошибки.
+При ручной линковке можно получить другой путь к динамическому линковщику, из-за чего
+при запуске возникнет ошибка \nolint|No such file or directory| или упомянутая ранее \nolint|bash: ./a.out: cannot execute: required file not found|. Путь к интерпретатору можно посмотреть
+двумя способами:
+
+\begin{lstlisting}
+patchelf --print-interpreter <file>
+readelf -l <file>
+\end{lstlisting}
+
+А явно задать его линковщику можно ключом:
+
+\begin{lstlisting}
+-dynamic-linker /lib64/ld-linux-x86-64.so.2
+\end{lstlisting}
+
+Попробуем:
+\begin{lstlisting}
+ld main.o -dynamic-linker /lib64/ld-linux-x86-64.so.2 \
+  /lib/x86_64-linux-gnu/libstdc++.so.6 \
+  /lib/x86_64-linux-gnu/libm.so.6 \
+  /lib64/ld-linux-x86-64.so.2 \
+  /lib/x86_64-linux-gnu/libgcc_s.so.1 \
+  /lib/x86_64-linux-gnu/libc.so.6 \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o \
+  /usr/lib/x86_64-linux-gnu/crtn.o \
+  /usr/lib/x86_64-linux-gnu/Scrt1.o \
+  /usr/lib/x86_64-linux-gnu/crti.o \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o
+\end{lstlisting}
+...
+\newpage
+И с высокой вероятностью получим segfault.
+Вторая наша ошибка была в том, что мы указали файлы не в том порядке. Попробуем теперь так:
+\begin{lstlisting}
+ld -dynamic-linker /lib64/ld-linux-x86-64.so.2 \
+  /usr/lib/x86_64-linux-gnu/Scrt1.o \
+  /usr/lib/x86_64-linux-gnu/crti.o \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o \
+  main.o \
+  /lib/x86_64-linux-gnu/libstdc++.so.6 \
+  /lib/x86_64-linux-gnu/libm.so.6 \
+  /lib64/ld-linux-x86-64.so.2 \
+  /lib/x86_64-linux-gnu/libgcc_s.so.1 \
+  /lib/x86_64-linux-gnu/libc.so.6 \
+  /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o \
+  /usr/lib/x86_64-linux-gnu/crtn.o
+\end{lstlisting}
+Иии... Всё заработает.
+
+Отдельный интересный вопрос --- как запускается сам динамический линковщик, который тоже
+является \nolint|.so|-файлом, но при этом должен запустить нашу программу. Прикол в том, что у
+\nolint|/lib64/ld-linux-x86-64.so.2|, и у \nolint|/lib/x86_64-linux-gnu/libc.so.6| есть точка входа: их можно использовать как
+библиотеки, а можно запускать напрямую.
+
+\section{Секции ELF и память}
+
+Подробную информацию о секциях можно получить командой:
+
+\begin{lstlisting}
+readelf -t a.out
+\end{lstlisting}
+
+Основные секции:
+
+\begin{itemize}
+    \item \nolint|.text| --- машинный код;
+    \item \nolint|.data| --- изменяемые инициализированные глобальные и статические данные;
+    \item \nolint|.rodata| --- неизменяемые инициализированные глобальные и статические данные;
+    \item \nolint|.bss| --- неинициализированные или инициализированные нулём глобальные и статические
+    данные (\textit{Block Started by Symbol}).
+\end{itemize}
+
+Если привести указатель на изначально константный объект к неконстантному типу и
+попытаться выполнить запись, поведение программы будет неопределённым. Для глобального или
+статического объекта, попавшего в доступную только для чтения память, на практике это обычно приведёт
+к segmentation fault. Константная локальная переменная на стеке обычно не вызовет такой ошибки, но
+запись в неё всё равно остаётся неопределённым поведением.
+
+Команда \nolint|size <file>| выводит размеры основных секций бинарного файла.
+
+P.S. Часть примеров здесь следует собирать как PIE, но разбор этой темы слишком объемный для нашей лекции, а примеры будут работать и так, т.к. они довольно простые. Желающим разобраться предлагается воспользоваться гуглом и гпт.
+\end{document}
