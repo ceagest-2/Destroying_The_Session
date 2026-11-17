@@ -2,7 +2,7 @@
 \input{packages.tex}
 
 \newcommand{\lectureNumber}{4}
-\newcommand{\lectureTitle}{Линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней. ФСР линейного однородного ДУ $n$-ого порядка с постоянными коэффициентами. Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами. Квазимногочлены.}
+\newcommand{\lectureTitle}{Линейные ДУ $n$-ого порядка с постоянными коэффициентами в случае кратных корней. ФСР линейного однородного ДУ $n$-ого порядка с постоянными коэффициентами}
 \newcommand{\courseName}{Элементы дифференциальных уравнений}
 \newcommand{\semester}{3 семестр, 2026/2027 уч. год}
 
@@ -132,102 +132,5 @@
 \begin{consequence}
     ФСР уравнения (\ref{eq:1}) существует. Более того, она состоит из $n$ функций (то есть $d = n$).
 \end{consequence}
-
-\section{Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами}
-
-Теперь будем рассматривать уравнения следующего вида:
-
-\[\tag{7} \label{eq:7} a_0 y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_n y = F(x), \; \; a_0, a_1, \ldots, a_n \in \mathbb{C}, \; \; a_0 \neq 0\]
-\[F \colon I \to \mathbb{R}, \; \; I \subset \mathbb{R} \text{ --- интервал}\]
-
-\begin{remark}
-    Следующие два утверждения позволяют чуть больше понять, как же устроено общее решение (\ref{eq:7}):
-    \begin{enumerate}
-        \item Пусть $y_1(x)$ --- решение \textbf{соответствующего} однородного уравнения (\ref{eq:1}), а $y_2(x)$ --- решение уравнения (\ref{eq:7}). Тогда $y(x) = y_1(x) + y_2(x)$ --- решение уравнения (\ref{eq:7}).
-        \item Пусть $y_1(x), y_2(x)$ --- решения уравнения (\ref{eq:7}). Тогда $y_1(x) - y_2(x)$ --- решение уравнения (\ref{eq:1}).
-    \end{enumerate}
-\end{remark}
-
-\begin{proof}
-    Докажем утверждения по очереди.
-    \begin{enumerate}
-        \item Так как $y_1(x)$ --- решение (\ref{eq:1}), то 
-        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = 0\]
-        Так как $y_2(x)$ --- решение (\ref{eq:7}), то 
-        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
-        Следовательно,
-        \[a_0 (y_1 + y_2)^{(n)} + \ldots + a_n (y_1 + y_2) = F(x)\]
-        \item Так как $y_1(x)$ и $y_2(x)$ --- решения (\ref{eq:7}), то 
-        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = F(x)\]
-        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
-        Следовательно,
-        \[a_0 (y_1 - y_2)^{(n)} + \ldots + a_n (y_1 - y_2) = 0\]
-    \end{enumerate}
-\end{proof} \leavevmode
-\\
-Из этого замечания сразу следует, что общее решение неоднородного уравнения (\ref{eq:7}) есть сумма частного решения (\ref{eq:7}) и общего решения однородного уравнения (\ref{eq:1}). Таким образом, задача об изучении множества решений (\ref{eq:7}) свелась к задаче о поиске частного решения (\ref{eq:7}). Этим мы и будем заниматься дальше.
-
-\subsection{Квазимногочлены}
-
-Будем обозначать за $\mathbb{R}_n[x]$ пространство многочленов с вещественными коэффициентами от переменной $x$ степени $\leq n$. Также условимся, что $\mathbb{R}[x]$ --- кольцо многочленов над полем $\mathbb{R}$, то есть
-\[\mathbb{R}[x] = \bigcup_{n \geq 0} \mathbb{R}_n[x]\]
-
-\begin{definition}
-    \textbf{Квазимногочленом} $F$ степени $m$ с показателем $\lambda = \alpha + i \beta$ называется функция вида
-    \[F(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x), \; \; p, q \in \mathbb{R}[x], \; \; \max \{\deg p, \deg q\} = m\]
-\end{definition}
-
-\begin{definition}
-    Определим \textbf{пространство квазимногочленов} фиксированной степени и фиксированного показателя:
-    \[Q_{\lambda, m} = \{r(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x) \; | \; p, q \in \mathbb{R}_{m - 1}[x]\} \]
-\end{definition} \leavevmode
-\\
-Из определения вытекает очевидное наблюдение:
-\[Q_{\overline{\lambda}, m} = Q_{\lambda, m}\]
-
-\begin{definition}
-    Для дальнейшей работы нам понадобится ещё и такое пространство:
-    \[Q_{\lambda, m}^k = \{x^k r(x) \; | \; r \in Q_{\lambda, m}\}, \; \; k \in \mathbb{Z}_{+}\]
-\end{definition}
-
-\begin{remark}
-    Отметим следующие милые тривиальные свойства:
-    \begin{enumerate}
-        \item \[Q_{\lambda, m}^k \subset Q_{\lambda, m + k}\]
-        \item \[Q_{\overline{\lambda}, m}^k = Q_{\lambda, m}^k\]
-    \end{enumerate}
-\end{remark}
-
-\begin{remark}
-    Если $\lambda = \alpha$, то есть $\beta = 0$, то
-    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \; | \; t = 0, 1, \ldots, (m - 1)\right\rangle \]
-    Если же $\lambda = \alpha + i \beta$, то есть $\beta \neq 0$, то 
-    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\right\rangle \]
-\end{remark}
-
-\begin{exercise}
-    Покажите, что все функции, входящие в набор
-    \[\{e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\}\]
-    являются линейно независимыми.
-\end{exercise}
-
-\begin{theorem}
-    Пусть $F \in Q_{\mu, m}$, $\mu \in \mathbb{C}$, а $s$ --- кратность $\lambda = \mu$ как корня характеристического уравнения $\chi(\lambda) = 0$ ($s = 0$, если $\lambda = \mu$ не является корнем). Тогда у уравнения (\ref{eq:7}) есть частное решение, которое принадлежит $Q_{\mu, m}^s$.
-\end{theorem}
-
-\begin{proof}
-    Проведем доказательство для $\mu \in \mathbb{R}$. Пусть $\mu$ --- корень $\chi(\lambda) = 0$ кратности $s \geq 0$. Тогда
-    \[\chi(\lambda) = \zeta(\lambda)(\lambda - \mu)^s\]
-    Здесь многочлен $\zeta(\mu) \neq 0$. Тогда уравнение (\ref{eq:7}) эквивалентно
-    \[\tag{8} \label{eq:8} \chi(\mathcal{D})(y(x)) = F(x)\]
-    Но
-    \[\chi(\mathcal{D}) = \zeta(\mathcal{D})(\mathcal{D} - \mu \mathcal{I})^s\]
-    Покажем, что отображение $\chi(\mathcal{D}) \colon Q_{\mu, m}^s \to Q_{\mu, m}$ является биекцией. Тогда, обратив его, при помощи равенства (\ref{eq:8}) получим искомое частное решение. \\
-    Достаточно показать, что каждое из отображений 
-    \[(\mathcal{D} - \mu \mathcal{I})^s \colon Q_{\mu, m}^s \to Q_{\mu, m}\]
-    \[\zeta(\mathcal{D}) \colon Q_{\mu, m} \to Q_{\mu, m}\]
-    является биекцией в силу представления выше. \\
-    \textbf{To be continued...}
-\end{proof}
 
 \end{document}

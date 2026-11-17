@@ -1,0 +1,311 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\newcommand{\lectureNumber}{5}
+\newcommand{\lectureTitle}{Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами. Квазимногочлены. Метод вариации постоянных}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+
+\DeclareMathOperator{\Ree}{Re}
+\DeclareMathOperator{\Imm}{Im}
+\DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\Lip}{Lip}
+\DeclareMathOperator{\loc}{loc}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Чил аут окончен, ребятки, свага накоплена}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/ceagest}{Юра} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Линейные неоднородные ДУ $n$-ого порядка с постоянными коэффициентами}
+
+Теперь будем рассматривать уравнения следующего вида:
+
+\begin{equation} \label{eq:1}
+    a_0 y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_n y = F(x), \; \; a_0, a_1, \ldots, a_n \in \mathbb{C}, \; \; a_0 \neq 0
+\end{equation}
+
+\begin{equation*}
+    F \colon I \to \mathbb{R}, \; \; I \subset \mathbb{R} \text{ --- интервал}
+\end{equation*} \leavevmode
+\\
+Нам также понадобится соответствующее старое доброе однородное:
+\begin{equation} \label{eq:2}
+    a_0 y^{(n)} + a_1 y^{(n - 1)} + \ldots + a_n y = 0
+\end{equation}
+
+\begin{remark}
+    Следующие два утверждения позволяют чуть больше понять, как же устроено общее решение (\ref{eq:1}):
+    \begin{enumerate}
+        \item Пусть $y_1(x)$ --- решение \textbf{соответствующего} однородного уравнения (\ref{eq:2}), а $y_2(x)$ --- решение уравнения (\ref{eq:1}). Тогда $y(x) = y_1(x) + y_2(x)$ --- решение уравнения (\ref{eq:1}).
+        \item Пусть $y_1(x), y_2(x)$ --- решения уравнения (\ref{eq:1}). Тогда $y_1(x) - y_2(x)$ --- решение уравнения (\ref{eq:2}).
+    \end{enumerate}
+\end{remark}
+
+\begin{proof}
+    Докажем утверждения по очереди.
+    \begin{enumerate}
+        \item Так как $y_1(x)$ --- решение (\ref{eq:2}), то 
+        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = 0\]
+        Так как $y_2(x)$ --- решение (\ref{eq:1}), то 
+        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
+        Следовательно,
+        \[a_0 (y_1 + y_2)^{(n)} + \ldots + a_n (y_1 + y_2) = F(x)\]
+        \item Так как $y_1(x)$ и $y_2(x)$ --- решения (\ref{eq:1}), то 
+        \[a_0 y_1^{(n)} + \ldots + a_n y_1 = F(x)\]
+        \[a_0 y_2^{(n)} + \ldots + a_n y_2 = F(x)\]
+        Следовательно,
+        \[a_0 (y_1 - y_2)^{(n)} + \ldots + a_n (y_1 - y_2) = 0\]
+    \end{enumerate}
+\end{proof} \leavevmode
+\\
+Из этого замечания сразу следует, что общее решение неоднородного уравнения (\ref{eq:1}) есть сумма частного решения (\ref{eq:1}) и общего решения однородного уравнения (\ref{eq:2}). Таким образом, задача об изучении множества решений (\ref{eq:1}) свелась к задаче о поиске частного решения (\ref{eq:1}). Этим мы и будем заниматься дальше.
+
+\subsection{Квазимногочлены}
+
+Будем обозначать за $\mathbb{R}_n[x]$ пространство многочленов с вещественными коэффициентами от переменной $x$ степени $\leq n$. Также условимся, что $\mathbb{R}[x]$ --- кольцо многочленов над полем $\mathbb{R}$, то есть
+\[\mathbb{R}[x] = \bigcup_{n \geq 0} \mathbb{R}_n[x]\]
+
+\begin{definition}
+    \textbf{Квазимногочленом} $F$ степени $m$ с показателем $\lambda = \alpha + i \beta$ называется функция вида
+    \[F(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x), \; \; p, q \in \mathbb{R}[x], \; \; \max \{\deg p, \deg q\} = m\]
+\end{definition}
+
+\begin{definition}
+    Определим \textbf{пространство квазимногочленов} фиксированной степени и фиксированного показателя:
+    \[Q_{\lambda, m} = \{r(x) = e^{\alpha x} (p(x) \cos \beta x + q(x) \sin \beta x) \; | \; p, q \in \mathbb{R}_{m - 1}[x]\} \]
+\end{definition} \leavevmode
+\\
+Из определения вытекает очевидное наблюдение:
+\[Q_{\overline{\lambda}, m} = Q_{\lambda, m}\]
+
+\begin{definition}
+    Для дальнейшей работы нам понадобится ещё и такое пространство:
+    \[Q_{\lambda, m}^k = \{x^k r(x) \; | \; r \in Q_{\lambda, m}\}, \; \; k \in \mathbb{Z}_{+}\]
+\end{definition}
+
+\begin{remark}
+    Отметим следующие милые тривиальные свойства:
+    \begin{enumerate}
+        \item \[Q_{\lambda, m}^k \subset Q_{\lambda, m + k}\]
+        \item \[Q_{\overline{\lambda}, m}^k = Q_{\lambda, m}^k\]
+    \end{enumerate}
+\end{remark}
+
+\begin{remark}
+    Если $\lambda = \alpha$, то есть $\beta = 0$, то
+    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \; | \; t = 0, 1, \ldots, (m - 1)\right\rangle \]
+    Если же $\lambda = \alpha + i \beta$, то есть $\beta \neq 0$, то 
+    \[Q_{\lambda, m} = \left\langle e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\right\rangle \]
+\end{remark}
+
+\begin{exercise}
+    Покажите, что все функции, входящие в набор
+    \[\{e^{\alpha x} x^t \cos \beta x, e^{\alpha x} x^s \sin \beta x \; | \; t, s = 0, \ldots, (m - 1)\}\]
+    являются линейно независимыми.
+\end{exercise} \leavevmode
+\\
+Ещё для будущих выкладок нам пригодится такая форма записи введённых пространств:
+\[\mu \in \mathbb{R} \implies Q_{\mu, m} = \left\langle \frac{e^{\mu x} x^{j - 1}}{(j - 1)!} \; | \; j = 1, \ldots, m\right\rangle \]
+
+\[\mu = \alpha + i \beta, \; \beta \neq 0  \implies Q_{\mu, m} = \left\langle e^{\alpha x} \cdot \cos \beta x \cdot \frac{x^{j - 1}}{(j - 1)!}, \; e^{\alpha x} \cdot \sin \beta x \cdot \frac{x^{j - 1}}{(j - 1)!} \; | \; j = 1, \ldots, m\right\rangle \]
+
+\begin{theorem}
+    Пусть $F \in Q_{\mu, m}$, $\mu \in \mathbb{C}$, а $s$ --- кратность $\lambda = \mu$ как корня характеристического уравнения $\chi(\lambda) = 0$ ($s = 0$, если $\lambda = \mu$ не является корнем). Тогда у уравнения (\ref{eq:1}) есть частное решение, которое принадлежит $Q_{\mu, m}^s$.
+\end{theorem}
+
+\begin{proof}
+
+    Проведем доказательство для $\mu \in \mathbb{R}$. Пусть $\mu$ --- корень $\chi(\lambda) = 0$ кратности $s \geq 0$. Тогда
+    \[\chi(\lambda) = \zeta(\lambda)(\lambda - \mu)^s\]
+    Здесь многочлен $\zeta(\mu) \neq 0$. Тогда уравнение (\ref{eq:1}) эквивалентно
+    \begin{equation} \label{eq:3}
+        \chi(\mathcal{D})(y(x)) = F(x)
+    \end{equation}
+    Но
+    \[\chi(\mathcal{D}) = \zeta(\mathcal{D})(\mathcal{D} - \mu \mathcal{I})^s\]
+    Покажем, что отображение $\chi(\mathcal{D}) \colon Q_{\mu, m}^s \to Q_{\mu, m}$ является биекцией. Тогда, обратив его, при помощи равенства (\ref{eq:3}) получим искомое частное решение. \\
+    Достаточно показать, что каждое из отображений 
+    \begin{equation*}
+        (\mathcal{D} - \mu \mathcal{I})^s \colon Q_{\mu, m}^s \to Q_{\mu, m}
+    \end{equation*}
+    \begin{equation*}
+        \zeta(\mathcal{D}) \colon Q_{\mu, m} \to Q_{\mu, m}
+    \end{equation*}
+    является биекцией в силу представления выше. \\
+    Рассмотрим следующий базис в пространстве $Q_{\mu, m + s} \supset Q_{\mu, m}^s$:
+    \[e_j(x) = \frac{e^{\mu x} x^{j - 1}}{(j - 1)!} \quad \forall j = 1, \ldots, (m + s)\]
+    Понятно что оператор $\mathcal{D} \colon Q_{\mu, m + s} \to Q_{\mu, m + s}$. Кроме того, несложно видеть, что
+    \[\mathcal{D} e_1 = \mu e_1 \quad \text{(} e_1 \text{ --- собственный)}\]
+    \[\mathcal{D} e_j = \mu e_j + e_{j - 1}, \quad j = 2, \ldots, (m + s)\]
+    Следовательно, матрица оператора $\mathcal{D}$ в этом базисе имеет вид
+    \begin{equation*}
+        J_{m + s}(\mu) = 
+        \begin{pmatrix}
+            \mu & 1 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & \mu & 1 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & \mu & 1 & 0 & \ldots & 0 \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 1 \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \mu
+        \end{pmatrix}
+        = \mu E_{m + s} + N_{m + s}, \text{ где}
+    \end{equation*}
+    \begin{equation*}
+        E_{m + s} = 
+        \begin{pmatrix}
+            1 & 0 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & 1 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & 1 & 0 & 0 & \ldots & 0 \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 1
+        \end{pmatrix}
+        , \quad N_{m + s} = 
+        \begin{pmatrix}
+            0 & 1 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & 1 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & 0 & 1 & 0 & \ldots & 0 \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 1 \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 0
+        \end{pmatrix}
+    \end{equation*}
+    Матрица $N_{m + s}$ --- нильпотентная порядка $m + s$, то есть $(N_{m + s})^{m + s} = O$. \\
+    Следовательно, у оператора $(\mathcal{D} - \mu \mathcal{I})^s$ матрица имеет вид $N_{m + s}^s$. Несложно понять, что
+    \begin{equation*}
+        N_{m + s}^s = 
+        \left(
+        \begin{array}{c|c}
+        O_{m \times s} & E_m \\
+        \hline
+        O_{s \times s} & O_{s \times m}
+        \end{array}
+        \right)
+    \end{equation*}
+    Тогда матрица оператора $(\mathcal{D} - \mu \mathcal{I})^s$, ограниченная на подпространство $Q_{\mu, m}^s$, есть просто $E_m$. В самом деле, подпространство $Q_{\mu, m}^s$ получено из $Q_{\mu, m}$ домножением на моном $x^s$, а значит оно натянуто всё на те же векторы $e_j(x)$, только $j$ надо брать от $s$ до $(m + s)$. 
+    Следовательно, $(\mathcal{D} - \mu \mathcal{I})^s$ --- биекция $Q_{\mu, m}^s$ и $Q_{\mu, m}$. \\
+    Рассуждая для $\zeta(\mathcal{D})$ аналогично, просто рассмотрев базис в $Q_{\mu, m}$ вместо $Q_{\mu, m + s}$, получаем, что матрица
+    оператора $\mathcal{D}$ в базисе $e_1, \ldots, e_m$ имеет вид
+    \begin{equation*}
+        J_m(\mu) = \mu E_m + N_m =
+        \begin{pmatrix}
+            \mu & 1 & 0 & 0 & 0 & \ldots & 0 \\
+            0 & \mu & 1 & 0 & 0 & \ldots & 0 \\
+            0 & 0 & \mu & 1 & 0 & \ldots & 0 \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & 1 \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \mu
+        \end{pmatrix}
+    \end{equation*} 
+    Несложно видеть, что
+    \begin{equation*}
+        J_m^l(\mu) = 
+        \begin{pmatrix}
+            \mu^l & \ast & \ast & \ast & \ast & \ldots & \ast \\
+            0 & \mu^l & \ast & \ast & \ast & \ldots & \ast \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \ast \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \mu^l
+        \end{pmatrix}
+        , \text{ где } \ast \text{ --- некоторый элемент}
+    \end{equation*}
+    Как известно, матрица оператора $\zeta(\mathcal{D})$ получается из матрицы оператора $\mathcal{D}$ действием $\zeta$, то есть мы просто подставляем $J_m(\mu)$ в многочлен $\zeta$ и складываем соответствующие степени $J_m^l(\mu)$ с соответствующими коэффициентами. Несложно понять, в результате матрица $\zeta(\mathcal{D})$ будет иметь вид 
+    \begin{equation*}
+        \begin{pmatrix}
+            \zeta(\mu) & \ast & \ast & \ast & \ast & \ldots & \ast \\
+            0 & \zeta(\mu) & \ast & \ast & \ast & \ldots & \ast \\
+            \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \ast \\
+            0 & 0 & 0 & 0 & 0 & \ldots & \zeta(\mu)
+        \end{pmatrix}
+    \end{equation*}
+    Но $\zeta(\mu) \neq 0$, а значит эта матрица невырожденна. Следовательно, $\zeta(\mathcal{D})$ --- биекция. Таким образом, требуемое доказано.
+\end{proof}
+
+\subsection{Метод вариации постоянных}
+
+Пусть $y_1(x), \ldots, y_n(x)$ --- ФСР уравнения (\ref{eq:2}). Тогда по уже доказанному нами ранее, общее решение уравнения (\ref{eq:2}) имеет вид 
+\[y(x) = \sum_{k = 1}^n c_k y_k(x), \text{ где } c_1, \ldots, c_n \in \mathbb{C}\]
+Будем искать частное решение уравнения (\ref{eq:1}) в виде 
+\begin{equation} \label{eq:4}
+    y(x) = \sum_{k = 1}^n c_k(x) y_k(x)
+\end{equation}
+
+\begin{theorem}
+    Пусть дифференцируемые функции $c_1, c_2, \ldots, c_n$ такие, что 
+    \begin{equation*} \label{eq:ast} \tag{$\ast$}
+        \begin{cases}
+            \sum_{k = 1}^n c'_k(x) y_k(x) = 0 \\
+            \sum_{k = 1}^n c'_k(x) y'_k(x) = 0 \\
+            \ldots \\ 
+            \sum_{k = 1}^n c'_k(x) y^{(n - 2)}_k(x) = 0 \\
+            \sum_{k = 1}^n c'_k(x) y^{(n - 1)}_k(x) = \frac{F(x)}{a_0}
+        \end{cases}
+        \quad \forall x \in I \subset \mathbb{R}, \; \text{ где } I \text{ --- область определения } F
+    \end{equation*}
+    Тогда $y(x)$, заданная равенством (\ref{eq:4}), является решением уравнения (\ref{eq:1}).
+\end{theorem}
+
+\begin{proof}
+    Для начала докажем лемму
+    \begin{lemma}
+        Пусть выполнена система $($\ref{eq:ast}$)$. Тогда
+        \begin{equation} \label{eq:5}
+            y^{(l)}(x) = \sum_{k = 1}^n c_k(x) y_k^{(l)}(x), \quad l = 0, 1, \ldots, (n - 1)
+        \end{equation}
+    \end{lemma}
+    \begin{proof}
+        Для $l = 0$ утверждение очевидно по определению (\ref{eq:4}) функции $y(x)$. При $l = 1$:
+        \[y'(x) = \left(\sum_{k = 1}^n c_k(x) y_k(x)\right)' = \underbrace{\sum_{k = 1}^n c'_k(x) y_k(x)}_{0} + \sum_{k = 1}^n c_k(x) y'_k(x) = \sum_{k = 1}^n c_k(x) y'_k(x)\]
+        Таким образом, получили базу индукции. \\
+        Теперь проделаем шаг индукции. Пусть (\ref{eq:5}) выполнено для всех $l < n - 1$. Тогда
+        \[y^{(l + 1)}(x) = \left(y^{(l)}(x)\right)' = \left(\sum_{k = 1}^n c_k(x) y_k^{(l)}(x)\right)' = \underbrace{\sum_{k = 1}^n c'_k(x) y_k^{(l)}(x)}_{0} + \sum_{k = 1}^n c_k(x) y_k^{(l + 1)}(x) = \sum_{k = 1}^n c_k(x) y_k^{(l + 1)}(x)\]
+    \end{proof} \leavevmode
+    \\
+    Раз мы теперь знаем, как выглядят наши производные функции $y(x)$, просто возьмём и подставим их в уравнение (\ref{eq:1}):
+    \[\sum_{j = 0}^n a_j y^{(n - j)}(x) = a_0 y^{(n)} (x) + \sum_{j = 1}^n a_j y^{(n - j)}(x) = a_0 \left( y^{(n - 1)} (x) \right)' + \sum_{j = 1}^n a_j y^{(n - j)}(x) = \]
+    \[= a_0 \left(\sum_{k = 1}^n c_k(x) y_k^{(n - 1)}(x)\right)' + \sum_{j = 1}^n a_j y^{(n - j)}(x) = \]
+    \[= a_0 \left(\sum_{k = 1}^n c'_k(x) y_k^{(n - 1)}(x) + \sum_{k = 1}^n c_k(x) y_k^{(n)}(x)\right) + \sum_{j = 1}^n a_j \sum_{k = 1}^n c_k(x) y_k^{(n - j)}(x) = \]
+    \[= a_0 \cdot \frac{F(x)}{a_0} + \left(a_0 \sum_{k = 1}^n c_k(x) y_k^{(n)}(x) + \sum_{j = 1}^n a_j \sum_{k = 1}^n c_k(x) y_k^{(n - j)}(x) \right) = \]
+    \[= F(x) + \sum_{j = 0}^n a_j \sum_{k = 1}^n c_k(x) y_k^{(n - j)}(x) = F(x) + \sum_{k = 1}^n c_k(x) \underbrace{\sum_{j = 0}^n a_j y_k^{(n - j)}(x)}_{0} = F(x)\]
+    Следовательно, функция $y(x)$, заданная равенством (\ref{eq:4}), действительно суть решение (\ref{eq:1}), что и требовалось.
+\end{proof}
+\end{document}
