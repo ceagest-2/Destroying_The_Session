@@ -1,0 +1,313 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+\newtheorem{fact}[theorem]{Факт}
+
+\newcommand{\lectureNumber}{12}
+\newcommand{\lectureTitle}{Теорема об изоморфизме. Вронскиан вектор-функций. Вронскиан скалярных функций.}
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Мишка, по телевизору тоже снег показывают!}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/mallina_olga}{Фиксик ночью постарался} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{А помните...}
+Напомним, что мы рассматриваем однородные линейные уравнения с переменными коэффициентами
+\begin{equation}
+   \dot{x}= A(t)x, A(t)\in \mathrm{MAT}_{n\times n} (\mathbb{R}), t\in I \subset \mathbb{R} \text{ --- интервал}, A(t) = (a_{ij}(t))_{i,j=1}^n, a_{ij} \in C(I)  
+   \label{eq:1}
+\end{equation}
+ 
+
+\begin{remark}
+      Пусть $\mathcal{L}$ --- множество всех решений уравнения \eqref{eq:1}. Заметим, что $\mathcal{L}$ --- линейное пространство. 
+\end{remark}
+
+\begin{theorem}
+    (об изоморфизме) Пусть $t_0\in I$ --- фиксированное. Тогда 
+    \[ \varphi_{t_0}: \mathcal{L} \to \mathbb{R}^n, x(t)\to x(t_0)=\varphi_{t_0} x(t) \text{ является изоморфизмом.} \]
+\end{theorem}
+
+\begin{proof}
+    $\forall a\in \mathbb{R}^n \ \exists! \  x(t)$ --- решение \eqref{eq:1} т.ч. $x(t_0)=a$, так как система
+    $ \begin{cases}
+        \dot{x} = A(t)x\\
+        x(t_0)=a
+    \end{cases} $
+    имеет единственное решение $\Rightarrow \varphi_{t_0}$ --- биекция. \\
+    Теперь докажем, что $\varphi_{t_0}$ --- гомоморфизм линейных пространств $\mathcal{L}$ и $\mathbb{R}^n$. 
+    Возьмём функцию и посмотрим образ этой функции под действием $\varphi_{t_0}: \varphi_{t_0} (\lambda x(t)) = \lambda x(t_0) = \lambda \varphi_{t_0} (x(t)) $. \\ 
+    Теперь, если возьмём два решения уравнения \eqref{eq:1}, то получим следующее:
+    \[ \varphi_{t_0} (x_1(t)+x_2(t)) = x_1(t_0) + x_2(t_0) = \varphi_{t_0} (x_1(t)) + \varphi_{t_0}(x_2(t)) \] 
+\end{proof}
+
+\begin{consequence}
+    \[ dim\, \mathcal{L} = n \] 
+\end{consequence}
+
+\begin{definition}
+    ФСР уравнения \eqref{eq:1} --- произвольный базис в $\mathcal{L}$. 
+\end{definition}
+
+\begin{consequence}
+    ФСР уравнения \eqref{eq:1} существует, причём $\forall$ решение уравнения \eqref{eq:1} является линейной комбинацией вектор-функций, образующих ФСР уравнения \eqref{eq:1}. 
+\end{consequence}
+
+\begin{proof}
+    Пусть $e_1, \ldots e_n$ --- базис в $\mathbb{R}^n$, а $ x_1(t) = \varphi_{t_0}^{-1}(e_1), \ldots, x_n(t) = \varphi_{t_0}^{-1} (e_n) $.\\
+    Тогда $x_1(t), \ldots x_n(t)$ --- базис в $\mathcal{L}$. 
+\end{proof}
+
+
+\section{Вронскиан вектор-функций}
+
+Пусть $I\subset \mathbb{R}$ --- интервал, $\mathcal{F} = \{f: I\to \mathbb{R}^n , f\in C(I)$ \}.
+
+\begin{definition}
+    Пусть $f_1, \ldots, f_n \in \mathcal{F}$. Тогда вронскианом набора вектор-функций $f_1, \ldots, f_n$ называется
+    \[ W_{f_1, \ldots, f_n} (t) = det\, (f_1(t) \ldots f_n(t)) \] 
+    Сама матрица называется матрицей Вронского. 
+\end{definition}
+
+\begin{remark}
+    Если $f_1, \ldots, f_n$ --- линейно зависимые $\Rightarrow W_{f_1, \ldots, f_n}(t) = 0 \ \forall t\in I$.\\
+    В обратную сторону это утверждение неверно.
+\end{remark}
+
+\begin{example}
+    Пусть $f_1(t)= 
+    \begin{pmatrix}
+        t^2\\
+        2t  
+    \end{pmatrix}
+    , f_2(t) = \begin{pmatrix}
+        t|t| \\
+        2|t|
+    \end{pmatrix}    
+    $. Тогда $W_{f_1, f_2}(t) = 0$, но $f_1$ и $f_2$ линейно независимы. 
+\end{example}
+
+
+\begin{statement}
+    Пусть $x_1(t), \ldots, x_n(t)$ --- решение уравнения \eqref{eq:1}. Тогда следующие утверждения эквиваленты:
+    \begin{enumerate}
+        \item $x_1, \ldots, x_n(t)$ --- линейно зависимы.
+        \item $W_{x_1, \ldots, x_n}(t) \equiv 0 $ на $I$
+        \item $\exists t_0\in I: W_{x_1, \ldots x_n}(t_0) = 0$
+    \end{enumerate}
+\end{statement}
+
+\begin{proof}
+    Нетрудно заметить (например из предыдущего замечания), что $1\Rightarrow 2 \Rightarrow 3$.\\
+    Покажем $3\Rightarrow 1:$ Так как $W_{x_1,\ldots, x_n}(t_0) = 0 \Rightarrow x_1(t_0), \ldots, x_n(t_0)$ --- линейно зависимы. Тогда $\displaystyle \exists c_1, \ldots, c_n\in \mathbb{R}: \sum_{k=1}^{n} x_k(t_0)c_k = 0 $. 
+    Тогда рассмотрим следующие функции: $\displaystyle x_t\equiv 0$,\\
+    $ \displaystyle \tilde{x}(t)=\sum_{k=1}^{n} c_kx_k(t)$ --- решения уравнения \eqref{eq:1}, причём $x(t_0)=0$ и $\tilde{x}(t_0)=0$. 
+    В силу единственности непродолжаемого решения уравнения \eqref{eq:1} $\displaystyle \sum_{k=1}^{n} c_k x_k(t) =0 \ \forall t\in I$. 
+\end{proof}
+
+\begin{theorem}
+    (Лиувилля-Остроградского) Пусть $W(t)$ --- вронскиан решений $x_1(t)\ldots x_n(t)$ уравнения \eqref{eq:1}.
+    Тогда  \[ \forall t_0\in I \ W(t) = W(t_0) e^{\int_{t_0}^{t} tr\,A(s)\, ds} \ \forall t\in I \] 
+\end{theorem}
+
+\begin{proof}
+    Для доказательства теоремы используем следующую лемму \ref{lem:2.1}. 
+    Проинтегрируем равенство из леммы:
+    \[ \frac{dW}{W} = trA(t)\, dt \Rightarrow \ln \left| \frac{W(t)}{W(t_0)} \right| = \int_{t_0}^{t} trA(s)\, ds \]
+\end{proof}
+
+\begin{lemma}\label{lem:2.1}
+    \[ \dot{W} = tr(A(t))W \]   
+\end{lemma}
+
+\begin{proof}
+    Пусть $X(t)$ --- матрица, столбцами которой являются $x_1(t), \ldots, x_n(t)$. 
+    \[ X(t) = \begin{pmatrix}
+        x_1(t) \ldots x_n(t)
+    \end{pmatrix} \]
+    Тогда справедливо следующее:
+    \begin{enumerate}
+        \item $ W(t) = \det X(t)$
+        \item $\dot{X} = A(t)X$
+    \end{enumerate}
+    Обозначим через $\xi_1(t), \ldots \xi_n(t) $ --- строки матрицы $X(t)$, то есть $ X(t) = \begin{pmatrix}
+        \xi_1(t)\\
+        \vdots\\
+        \xi_n(t)
+    \end{pmatrix}$
+    $\Rightarrow$ уравнение $\dot{X} = AX$ можно переписать в виде:
+    \[ \dot{\xi}_k = a^k X = \sum_{s=1}^{n} a_{ks} \xi_s \text{ , где } a^k= (a_{k1}, \ldots, a_{kn}) \text{ --- k-ая строка матрицы } A(t), k=1,\ldots, n\] 
+    Используя факт \ref{fact:2.2}, получим:
+    \[ \dot{W} = (\det X)^{\boldsymbol{\cdot}} =\begin{vmatrix}
+        \dot{\xi_1(t)} \\
+        \vdots \\
+        {\xi_n(t)}
+    \end{vmatrix}
+    + \ldots + \begin{vmatrix}
+        \xi_1(t)\\
+        \vdots\\
+        \xi_{n-1}(t)\\
+        \dot{\xi_n(t)}
+    \end{vmatrix} =
+    \begin{vmatrix} \displaystyle
+        \sum_{s=1}^{n} a_{1s}\xi_s\\
+        \xi_2\\
+        \vdots\\
+        \xi_n
+    \end{vmatrix} +\ldots + 
+    \begin{vmatrix} 
+        \xi_1\\
+        \vdots\\
+        \xi_{n-1}\\
+        \displaystyle \sum_{s=1}^{n} a_{ns}\xi_s
+    \end{vmatrix} \]    
+    Воспользуемся фактом \ref{fact:2.3} и получим:
+    \[ = a_{11}\cdot W + a_{22}\cdot W + \ldots + a_{nn}\cdot W = W\cdot trA  \]
+    И, наконец, это был end of the proof. 
+\end{proof}
+
+\begin{fact}\label{fact:2.2}
+    Для доказательства предыдущей леммы мы использовали этот факт:
+    \[ \left( \det \begin{pmatrix}
+        b_1(t) \\
+        \vdots \\
+        b_n(t)
+    \end{pmatrix} \right)^{\boldsymbol{\cdot}}
+    =  \begin{vmatrix}
+        \dot{b_1(t)} \\
+        \vdots \\
+        {b_n(t)}
+    \end{vmatrix}
+    + \ldots + \begin{vmatrix}
+        b_1(t)\\
+        \vdots\\
+        b_{n-1}(t)\\
+        \dot{b_n(t)}
+    \end{vmatrix}  \]
+\end{fact}
+
+
+\begin{fact}\label{fact:2.3}
+    \[ \begin{vmatrix}
+        a_1^{(1)} + a_1^{(2)} \\
+        a_2 \\
+        \vdots \\
+        a_n
+    \end{vmatrix} = \begin{vmatrix}
+        a_1^{(1)} \\
+        a_2 \\
+        \vdots \\
+        a_n
+    \end{vmatrix} + \begin{vmatrix}
+        a_1^{(2)} \\
+        a_2 \\
+        \vdots \\
+        a_n \end{vmatrix}
+        \]
+\end{fact}
+
+\section{Вронскиан скалярных функций}
+Пусть $\mathcal{F} = \{ f: I\to \mathbb{R} | f\in C^{n-1}(I) \}, n\ge 1, n\in \mathbb{N}$.
+\begin{definition}
+    Пусть $f_1, \ldots f_n\in \mathcal{F}$. 
+    \[ W_{f_1,\ldots, f_n}(t) = \det \begin{pmatrix}
+        f_1(t) & f_2(t) & \ldots & f_n(t)\\
+        f_1'(t) & f_2'(t) & \ldots & f_n'(t)\\
+        \vdots & \vdots & \vdots & \vdots \\
+        f_1^{(n-1)}(t)& f_2^{(n-1)}(t) & \ldots & f_n^{(n-1)}(t) 
+    \end{pmatrix} \text{ --- вронскиан скалярных функций } f_1, \ldots, f_n \]
+\end{definition}
+
+\begin{statement}
+    Если $f_1, \ldots, f_n$ --- линейно зависимые $\Rightarrow W_{f_1, \ldots, f_n}(t)  \equiv 0 \ \forall t\in I$.\\
+    В обратную сторону это утверждение неверно.
+\end{statement}
+
+Рассматриваем ДУ 
+\begin{equation}\label{eq:2}
+    y^{(n)} + a_1(t)y^{(n-1)} + \ldots + a_{n-1}(t)y' + a_n(t)y=0, \ a_1(t), \ldots, a_n(t) \in C(I)
+\end{equation}
+
+\begin{theorem}
+    Пусть $y_1(t), \ldots, y_n(t)$ --- решения уравнения \eqref{eq:2}. Тогда следующие утверждения эквиваленты:
+    \begin{enumerate}
+        \item $y_1(t), \ldots, y_n(t)$ --- линейно зависимы на $I$
+        \item $W_{y_1, \ldots, y_n}(t) \equiv 0$ на $I$
+        \item $\exists t_0\in I \Rightarrow W_{y_1, \ldots, y_n} (t_0) = 0$
+    \end{enumerate}
+\end{theorem}
+
+\begin{remark}
+    Уравнение \eqref{eq:2} можно свести к системе вида \eqref{eq:1}: $\dot{x} = A(t)x$, \\
+    где $x(t) = (y(t), y'(t), \ldots, y^{(n-1)}(t))^{\text{T}}$, 
+    \[ A(t) = \begin{pmatrix}
+        0 & 1 & 0 & 0 & \dots & 0 \\
+        0 & 0 & 1 & 0 & \dots & 0 \\
+        \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & 0 & \dots & 1 \\
+        a_n & a_{n-1} & \dots & \dots & a_2 & a_1 \\
+    \end{pmatrix} \]
+    Диагональю в этой матрице является:
+    \[
+    A(t) =
+    \begin{pmatrix}
+        \textcolor{red}{0} & 1 & 0 & \cdots & 0 \\
+        0 & \textcolor{red}{0} & 1 & \cdots & 0 \\
+        \vdots & \vdots & \textcolor{red}{\ddots} & \ddots & \vdots \\
+        0 & 0 & \cdots & \textcolor{red}{0} & 1 \\
+        -a_n & -a_{n-1} & \cdots & -a_2 & \textcolor{red}{-a_1}
+    \end{pmatrix} \]
+    Также, если $y_1, \ldots, y_n$ --- решения уравнения \eqref{eq:2}, то 
+    \[ W_{y_1, \ldots, y_n} (t) = W_{x_1, \ldots x_n}(t) \text{ , где } x_k(t) = \begin{pmatrix}
+        y_k(t)\\
+        y_k'(t)\\
+        \vdots\\
+        y_k^{(n-1)}(t) 
+        
+    \end{pmatrix}\] 
+\end{remark}
+
+\begin{theorem}
+    (Лиувилля-Остроградского) Пусть $y_1(t), \ldots, y_n(t)$ --- решения уравнения \eqref{eq:2}, а $W$ --- вронскиан этого набора функций. Тогда
+    \[  W(t) = W(t_0) e^{-\int_{t_0}^{t} a_1(s)\, ds} \ \forall t,t_0 \in I \] 
+\end{theorem}
+
+
+\end{document} 
