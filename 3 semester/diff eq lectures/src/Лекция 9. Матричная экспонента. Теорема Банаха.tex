@@ -1,0 +1,272 @@
+\documentclass[11pt]{article}
+\input{packages.tex}
+
+\DeclareMathOperator{\Matr}{Matr}
+\DeclareMathOperator{\Real}{Re}
+\DeclareMathOperator{\Imm}{Im}
+\DeclareMathOperator{\M}{M}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Lip}{Lip}
+
+\newsavebox{\sqcontent}
+\newdimen\sqside
+
+\newcommand{\sqbox}[1]{%
+    \mathord{\mathpalette\sqboxaux{#1}}%
+}
+
+\newcommand{\sqboxaux}[2]{%
+    \begingroup
+    \setbox\sqcontent=\hbox{$#1#2$}%
+    \sqside=\wd\sqcontent
+    \dimen0=\ht\sqcontent
+    \advance\dimen0 by \dp\sqcontent
+    \ifdim\dimen0>\sqside
+        \sqside=\dimen0
+    \fi
+    \vcenter{\hbox{%
+        \fbox{%
+            \vbox to \sqside{%
+                \vfil
+                \hbox to \sqside{\hfil\box\sqcontent\hfil}%
+                \vfil
+            }%
+        }%
+    }}%
+    \endgroup
+}
+
+\newcommand{\lectureNumber}{9}
+\newcommand{\lectureTitle}{Матричная экспонента. Принцип сжимающих отображений. }
+\newcommand{\courseName}{Элементы дифференциальных уравнений}
+\newcommand{\semester}{3 семестр, 2026/2027 уч. год}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Я там и тут --- куда пошлют. А посылают часто.}
+\fancyhead[R]{\thepage}
+\setlength{\headheight}{15pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    filecolor=blue!70!black,
+    urlcolor=blue!70!black,
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    {\large Московский физико-технический институт \par}
+    {\large Высшая школа программной инженерии \par}
+    \vspace{2cm}
+
+    {\Large \textbf{\courseName} \par}
+    {\large \semester \par}
+    
+    \vspace*{\fill}
+
+    {\Huge \textbf{Лекция \lectureNumber} \par}
+    {\Huge \textbf{\lectureTitle} \par}
+    
+    \vspace*{\fill}
+    
+    {\large Лектор: Саулин Сергей Михайлович \par}
+    {\large Автор: \href{https://t.me/lost_luna}{Полуночник} \par}
+
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\section{Матричная экспонента}
+
+\begin{definition}
+    Пусть $A \in \M_n(\mathbb{R})$ --- матрица с вещественными коэффициентами, тогда матричной экспонентой называют ряд \[e^A = E + \frac{A}{1!} + 
+    \frac{A^2}{2!} + \dots + \frac{A^m}{m!} + \dots\]
+\end{definition}
+
+\noindent \textbf{Свойства матричной экспоненты:}
+\begin{enumerate}
+    \item Пусть $A = \diag(\lambda_1, \dots, \lambda_n)$, тогда $e^A = \diag(e^{\lambda_1}, \dots, e^{\lambda_n})$.
+    \item Если $A$ --- блочно-диагональная матрица,
+    \[A = \begin{pmatrix}
+            \sqbox{B_1} & 0 & \cdots & 0 \\
+            0 & \sqbox{B_2} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \sqbox{B_k}
+        \end{pmatrix} \]
+    то $e^A$ --- тоже блочно-диагональная матрица
+    \[e^A = \begin{pmatrix}
+            \sqbox{e^{B_1}} & 0 & \cdots & 0 \\
+            0 & \sqbox{e^{B_2}} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \sqbox{e^{B_k}}
+        \end{pmatrix} \]
+    \item Если $A \cdot B = B\cdot A$, то $e^{A + B} = e^A \cdot e^B$.
+    \item Если $N^k = 0$, то $\displaystyle e^N = E + \frac{N}{1!} + \dots + \frac{N^{k - 1}}{(k - 1)!}$.
+    \item Если $J_n(\lambda)$ --- Жорданова клетка, то \[e^{J_n(\lambda) t} = e^{\lambda t}
+    \begin{pmatrix}
+            \displaystyle 1 & \displaystyle \frac{t}{1!} & \displaystyle \frac{t^2}{2!} & \cdots
+            & \displaystyle \frac{t^{n-1}}{(n-1)!} \\
+            \displaystyle 0 & \displaystyle 1 & \displaystyle \frac{t}{1!} & \cdots
+            & \displaystyle \frac{t^{n-2}}{(n-2)!} \\
+            \displaystyle 0 & \displaystyle 0 & \displaystyle 1 & \ddots & \vdots \\
+            \vdots & \vdots & \ddots & \ddots & \displaystyle \frac{t}{1!} \\
+            \displaystyle 0 & \displaystyle 0 & \cdots & \displaystyle 0 & \displaystyle 1
+        \end{pmatrix} \] 
+    \item Если $A = S B S^{-1}$, то $e^A = S e^B S^{-1}$.
+    \begin{proof}
+        Верность вытекает из следующего наблюдения:
+        \[A^N = (S B S^{-1}) \cdot (S B S^{-1}) \cdot\dots{\cdot} \ (S B S^{-1}) = [S^{-1} S = E] = S B^N S^{-1}\]
+        \[e^A = E + \frac{A}{1!} + \dots + \frac{e^{A^m}}{m!} + \dots = S S^{-1} + \frac{S B S{-1}}{1!} + \dots + \frac{SB^mS^{-1}}{m!} + \dots = \]
+        \[= S \left(E + \frac{B}{1!} + \dots + \frac{B^m}{m!} + \dots\right)S^{-1} = S e^B S^{-1}\]
+    \end{proof} 
+    \item $\det e^A = e^{\tr A}$, где $\tr A$ --- след матрицы $A$.
+    \begin{proof}
+        Пусть в Жордановом базисе матрица $A$ имеет вид
+        \[J = \begin{pmatrix}
+            \sqbox{J_{k_1}(\lambda_1)} & 0 & \cdots & 0 \\
+            0 & \sqbox{J_{k_2}(\lambda_2)} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \sqbox{J_{k_s}(\lambda_s)}
+        \end{pmatrix} = S^{-1} A S,\]
+        где $S$ --- матрица перехода от исходного базиса к Жорданову. Тогда $A = S J S^{-1} \Longrightarrow e^A = S e^J S^{-1}$,
+        \[e^J = \begin{pmatrix}
+            \sqbox{e^{J_{k_1}(\lambda_1)}} & 0 & \cdots & 0 \\
+            0 & \sqbox{e^{J_{k_2}(\lambda_2)}} & \ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0 \\
+            0 & \cdots & 0 & \sqbox{e^{J_{k_s}(\lambda_s)}}
+        \end{pmatrix}\]
+        Внимательно посмотрев на свойство (5) при $t = 1$, поймем, что наша матрица $e^J$ является верхнетреугольной, причём на главной диагонали стоит по 
+        $k_i$ чисел вида $e^{\lambda_i}$. Тогда \[\det e^A = \det S \cdot \det e^J \cdot \det S^{-1} = \det e^J = \left(e^{\lambda_1}\right)^{k_1} {\cdot}
+        \dots {\cdot} \left(e^{\lambda_s}\right)^{k_s} = e^{\sum\limits_{j = 1}^{s} \lambda_j \cdot k_j} = e^{\tr J} = e^{\tr A}\]
+    \end{proof}
+    \item Если $v$ --- собственный вектор матрицы $A$ с собственным значением $\lambda$, то $v$ --- собственный вектор матрицы $e^A$ с собственным значением 
+    $e^\lambda$.
+    \begin{proof}
+        Заметим вот такую прелесть: \[A^mv = A^{m-1}(Av) = \lambda A^{m-1}v = \lambda^m v \quad \forall m \in \mathbb{N}\]
+        Отсюда следует, что \[e^A v = \left(\sum_{k = 0}^{\infty} \frac{A^k}{k!}\right)v = \sum_{k = 0}^{\infty} \frac{A^k v}{k!} = \sum_{k = 0}^{\infty}
+        \frac{\lambda^k v }{k!} = v \sum_{k = 0}^{\infty}\frac{\lambda^k}{k!} = e^\lambda v\]
+    \end{proof}
+    \item $\displaystyle \frac{d}{dt} e^{A t} = A e^{At}$
+    \begin{proof}
+        \[\frac{d}{dt} e^{At} = \frac{d}{dt} \sum_{k = 0}^{\infty } \frac{A^k t^k}{k!} = \sum_{k = 0}^{\infty} \frac{d}{dt} \left(\frac{A^k t^k}{k!}\right)
+        = \sum_{k = 1}^{\infty} \frac{A^k t^{k-1}}{(k-1)!} = A \sum_{k = 0}^{\infty} \frac{A^k t^k}{k!} = A e^{At}\]
+    \end{proof}
+\end{enumerate}
+
+\begin{theorem}
+    Решение задачи Коши \[\left\{ \begin{array}{l}
+        \dot{x} = Ax \\ x(t_0) = x_0
+    \end{array}\right.\]
+    имеет следующий вид: $x(t) = e^{A(t - t_0)} \cdot x_0, \ t \in \mathbb{R}$.
+\end{theorem}
+
+\begin{proof}
+    \[\frac{d}{dt} x(t) = \frac{d}{dt}\left(e^{A(t - t_0)} x_0\right) = \left[\text{ свойство (9) }\right] = A e^{A(t - t_0)} x_0 = A \cdot x(t)\]
+    Второе условие, очевидно, выполняется: \[x(t_0) = e^{A(t_0 - t_0)} \cdot x_0 = e^0 \cdot x_0 = x_0\]
+\end{proof}
+
+\begin{remark}
+    Общее решение уравнения $\dot{x} = A x$ имеет следующий вид: \[x(t) = e^{A t} \cdot c, \quad \text{где } c \in \mathbb{R}^n \left(\mathbb{C}^n\right)\]
+\end{remark}
+
+\begin{remark}
+    $\Phi(t) = e^{At}$ --- фундаментальная матрица для уравнения $\dot{x} = A x$, причём $\Phi(0) = E$.
+\end{remark}
+
+\begin{consequence}
+    Решение задачи Коши \[\left\{ \begin{array}{l}
+        \dot{x} = Ax + b \\ x(t_0) = x_0
+    \end{array}\right.\]
+    где $b: I \to \mathbb{R}^n, \ I \subset R$ --- интервал, $t_0 \in I$, имеет следующий вид: 
+    \[x(t) = e^{A(t - t_0)} \cdot x_0 + \int_{t_0}^{t}e^{A(t-s)} b(s)  \,ds , \ t \in I\]
+\end{consequence}
+
+\begin{proof}
+    Следует из предыдущей теоремы и метода вариации постоянных для линейных неоднородных систем ДУ с постоянными коэффициентами.
+\end{proof}
+
+\section{Принцип сжимающих отображений}
+
+Пусть $(X, \rho)$ --- метрическое пространство.
+\begin{definition}
+    $\{x_n\}_{n = 1}^\infty \subset X$ --- фундаментальная последовательность, если \[\forall \varepsilon > 0 \ \exists N \in \mathbb{N}: \forall n \geq N 
+    \hookrightarrow \rho(x, x_n) < \varepsilon\]
+\end{definition}
+
+\begin{definition}
+    $(X, \rho)$ --- полное метрическое пространство, если любая фундаментальная последовательность в $X$ является сходящейся в $X$.
+\end{definition}
+
+\begin{example}
+    \leavevmode
+    \begin{enumerate}
+        \item $\mathbb{R}^n$ со стандартной метрикой $\rho(x, y) = |x - y|, \ |\cdot|$ --- евклидово расстояние. $(\mathbb{R}^n, \rho)$ --- полное 
+        метрическое пространство.
+        \item $(X, \rho)$ --- полное метрическое пространство, $Y \subset X$ --- замкнутое (относительно $\rho$), тогда $(Y, \rho|_y)$ --- полное 
+        метрическое пространство. 
+        \item $K \subset \mathbb{R}$ --- отрезок, $C(K)$ --- непрерывные вектор-функции на $K$ ($u \in C(K), \ u : K \to \mathbb{R}^n$). Введём норму 
+        \[||u|| = \sup_{x \in K} |u(x)|, \quad \rho(u_1, u_2) = ||u_1 - u_2||\] Тогда $(C(k), \rho)$ --- полное метрическое пространство.
+    \end{enumerate}
+\end{example}
+
+\begin{remark}
+    Пусть $u_n \in C(K), \ n \in \mathbb{N}$, $u \in C(k)$. Тогда \[||u_n - u|| \to 0, \ n \to \infty \Longleftrightarrow
+    u_n \underset{n \to \infty}{\overset{K}{\rightrightarrows}} u\]
+\end{remark}
+
+\begin{definition}
+    Пусть $(X, \rho)$ --- метрическое пространство, $\mathcal{A}: X \to X$ --- сжимающий оператор, если 
+    \[\exists q \in (0, 1): \ \forall x, y \in X \hookrightarrow \rho(\mathcal{A}x, \mathcal{A}y) \leq \rho(x, y)\]
+\end{definition}
+
+\begin{definition}
+    Пусть $\mathcal{A}: X \to X$. $x \in X$ называется неподвижной точкой оператора $\mathcal{A}$, если $\mathcal{A}x = x$.
+\end{definition}
+
+\begin{theorem}[Банаха]
+    Пусть $(X, \rho)$ --- полное метрическое пространство, а $\mathcal{A}: X \to X$ --- сжимающий оператор с коэффициентом $q \in (0, 1)$, 
+    тогда \[\exists! \ x \in X: \ \mathcal{A}x = x\]
+\end{theorem}
+
+\begin{proof}
+    Зафиксируем $x_0 \in X$, рассмотрим последовательность $x_n = \mathcal{A}^n x_0$, где \[\mathcal{A}^n = \underbrace{\mathcal{A} \circ \mathcal{A}
+    \circ \dots \circ \mathcal{A}}_n, \quad \text{то есть, } x_n = \mathcal{A} x_{n-1}, \ n \in \mathbb{N}\]
+    Тогда \[\rho(x_n, x_{n+1}) = \rho(\mathcal{A}x_{n-1}, \mathcal{A}x_n) \leq q \cdot \rho(x_{n-1}, x_n) \leq q^n \cdot \rho(x_0, x_1)\]
+    Теперь оценим расстояние между двумя произвольными элементами последовательности (без ограничения общности считаем, что $n < m$): 
+    \[\rho(x_n, x_m) \leq \rho (x_n, x_{n+1}) + \dots + \rho(x_{m - 1}, x_m) \leq (q^n + q^{n+1} + \dots + q^{m-1}) \rho(x_0, x_1)\]
+    Добавим бесконечное число слагаемых и получим сумму бесконечно убывающей геометрической прогрессии: 
+    \[\rho(x_n, x_m) < (q^n + q^{n+1} + \dots) \rho(x_0, x_1) = \frac{q^n}{1 - q} \rho(x_0, x_1)\]
+    Теперь зафиксируем $\varepsilon > 0$ и найдём $N \in \mathbb{N}: \ \displaystyle \frac{q^N}{1 - q} < \varepsilon$. Такое $N$ всегда найдётся,
+    потому что $q \in (0, 1)$, и величину $\displaystyle \frac{q^N}{1 - q}$ мы можем сделать сколь угодно малой. Получается, 
+    \[\forall \varepsilon > 0 \ \exists N \in \mathbb{N}: \ \forall n, m \geq N \hookrightarrow \rho(x_n, x_m) < \varepsilon \Longleftrightarrow
+    \{x_n\}_{n = 1}^\infty \text{ --- фундаментальна}\]
+    Тогда, в силу полноты пространства $(X, \rho)$, существует $x \in X: \ x_n \to x, \ n \to \infty$. \\ Покажем, что $\mathcal{A} x = x$: действительно,
+    рассмотрим \[\rho(\mathcal{A}x_n, \mathcal{A}x) \leq q \cdot \rho(x_n, x) \to 0, n \to \infty \Longrightarrow \mathcal{A}x_n \to \mathcal{A}x, \ 
+    n \to \infty\] Но вспомним, что $\mathcal{A}x_n = x_{n+1}$, а для последовательности $\{x_n\}_{n = 1}^\infty$ мы доказали, что $x$ является её пределом.
+    А так как последовательность $\{\mathcal{A} x_n\}_{n = 1}^\infty$ отличается от последовательности $\{x_n\}_{n = 1}^\infty$ только первым членом, то их 
+    пределы совпадают, а значит, $x = \mathcal{A}x$. \\
+    Теперь покажем, что неподвижная точка у $\mathcal{A}$ единственна: от противного, пусть есть две точки $x, y \in X: \ \mathcal{A}x = x, \ \mathcal{A}y 
+    = y, \ x \neq y$. Тогда \[0 < \rho(x, y) = \rho(\mathcal{A}x, \mathcal{A}y) \leq q \cdot \rho(x, y) < [q < 1] < \rho(x, y)\]
+    Получили противоречие, следовательно, $x = y$.
+\end{proof}
+
+\begin{theorem}[о $\exists!$ решения задачи Коши]
+    Пусть $f \in C(G), \ G \subset \mathbb{R}^{n+1}$ --- область, $f \in \Lip^{loc}_y(G)$, тогда $\forall (x_0, y_0) \in G \ \exists I \subset \mathbb{R}$ --- 
+    интервал, $x_0 \in I$ и $\exists y : I \to \mathbb{R}^n:$
+    \[\left\{ \begin{array}{l}
+        y'(x) = f(x, y(x)) \\ y(x_0) = y_0
+    \end{array}\right. \quad \forall x \in I \tag{*} \label{eq:1}\]
+    Причём любое другое решение задачи Коши (\ref{eq:1}) локально совпадает с $y(x)$.
+\end{theorem}
+
+\begin{lemma}
+    Если $f \in C(G)$, то \[y: I \to \mathbb{R}^n \text{ --- решение З. К. (\ref{eq:1}) } \Longleftrightarrow y(x) = y_0 + \int_{x_0}^{x} f(x, y(s)) \,ds \]
+\end{lemma}
+\end{document}
